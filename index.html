@@ -342,13 +342,91 @@
       color: var(--accent);
       border: 0.5px solid rgba(10, 132, 255, 0.3);
       margin-bottom: 6px;
+    /* DYNAMIC ISLAND SIMULATOR (iOS HIG) */
+    .dynamic-island-wrapper {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #000000;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 25px;
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      cursor: pointer;
+    }
+    .dynamic-island-wrapper.expanded {
+      width: 320px;
+      border-radius: 28px;
+      padding: 12px 16px;
+      flex-direction: column;
+      align-items: stretch;
+      background: rgba(10, 10, 12, 0.95);
+      backdrop-filter: blur(30px);
+    }
+    .di-pill-compact {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+    .di-dot-live {
+      width: 8px;
+      height: 8px;
+      background: var(--accent-green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent-green);
+      animation: diPulse 1.5s infinite;
+    }
+    @keyframes diPulse {
+      0% { opacity: 0.4; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.15); }
+      100% { opacity: 0.4; transform: scale(0.9); }
+    }
+    .di-expanded-content {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .dynamic-island-wrapper.expanded .di-expanded-content {
+      display: flex;
     }
   </style>
 </head>
 <body>
 
-  <!-- HEADER iOS -->
-  <header>
+  <!-- HEADER iOS CON DYNAMIC ISLAND INTEGRATA -->
+  <header style="position: relative;">
+    <!-- DYNAMIC ISLAND SIMULATED PILL -->
+    <div id="dynamic-island" class="dynamic-island-wrapper" onclick="toggleDynamicIslandExpand()">
+      <div class="di-pill-compact">
+        <div class="di-dot-live" id="di-dot"></div>
+        <span id="di-title-compact">🏋️ Calisthenics Pro</span>
+        <span id="di-timer-compact" style="color: var(--accent-orange); margin-left: 4px;">--:--</span>
+      </div>
+      <div class="di-expanded-content">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span id="di-status-badge" style="font-size:0.7rem; color:var(--accent); font-weight:700;">WORKOUT IN CORSO</span>
+          <span style="font-size:0.65rem; color:var(--text-secondary);">Tocca per comprimere</span>
+        </div>
+        <div class="canvas-container" style="height: 100px; background: rgba(0,0,0,0.6); border-radius: 14px;">
+          <canvas id="di-canvas" width="280" height="100"></canvas>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.85rem; font-weight:700;">
+          <span id="di-ex-name" style="color:#fff;">Push-up</span>
+          <span id="di-timer-large" style="color:var(--accent-green); font-size:1.1rem;">00:00</span>
+        </div>
+      </div>
+    </div>
+
     <div class="brand-title">
       <span>Calisthenics</span>
       <span class="brand-badge">Enterprise</span>
@@ -357,7 +435,6 @@
       <div id="watch-badge" onclick="toggleAppleWatchSim()" style="font-size:0.72rem; background:rgba(255,45,85,0.15); color:#ff2d55; padding:4px 8px; border-radius:12px; border:1px solid rgba(255,45,85,0.3); cursor:pointer; font-weight:600;">
         ⌚ Watch: 78 BPM
       </div>
-      <div id="haptic-status" style="font-size: 0.75rem; color: var(--text-secondary);">⚡ Haptics ON</div>
     </div>
   </header>
 
@@ -375,6 +452,21 @@
           <button class="btn btn-secondary btn-small" onclick="triggerHaptic(); shiftDay(-1)">← Prec.</button>
           <button class="btn btn-secondary btn-small" onclick="triggerHaptic(); resetToDayOne()" style="color: var(--accent-orange);">🔄 Reset Giorno 1</button>
           <button class="btn btn-secondary btn-small" onclick="triggerHaptic(); shiftDay(1)">Succ. →</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Modalità di Allenamento</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px;">
+          <button id="mode-btn-reps" class="btn btn-small" onclick="triggerHaptic(); setWorkoutMode('reps')" style="background: linear-gradient(135deg, var(--accent), #0055b3); color: #ffffff; border: 1px solid rgba(255,255,255,0.3); font-weight: 700;">
+            🔢 Ripetizioni (N Reps)
+          </button>
+          <button id="mode-btn-time" class="btn btn-small" onclick="triggerHaptic(); setWorkoutMode('time')" style="background: var(--bg-elevated); color: var(--text-secondary); border: 1px solid var(--border-card); font-weight: 600;">
+            ⏱️ A Tempo (30s / serie)
+          </button>
+        </div>
+        <div id="mode-desc" style="font-size: 0.78rem; color: var(--accent-green); margin-top: 8px; text-align: center; font-weight: 600;">
+          Modalità attiva: Ripetizioni standard per ciascun esercizio.
         </div>
       </div>
 
@@ -629,126 +721,126 @@
   </div>
 
 <script>
-/* DATABASE WORKOUT ESERCIZI (5 LIVELLI COMPLETI) */
+/* DATABASE WORKOUT ESERCIZI (5 LIVELLI COMPLETI CON TEMPI CALISTHENICS PERSONALIZZATI) */
 const WORKOUT_DB = {
   1: {
     name: "Livello 1 — Fondamenta",
     A: { title: "Giorno A — Full body", ex: [
-      { id:"pushup_table", n:"Push-up inclinati", v:"3 × 6–10", r:75, sets:3, d:"Mani su tavolo robusto. Corpo in linea solida, scendi col petto al bordo e risali controllando.", anim:"pushup_table" },
-      { id:"table_row", n:"Row al tavolo", v:"3 × 6–10", r:75, sets:3, d:"Sdraiati sotto un tavolo stabile. Afferra il bordo saldamente e tira il petto verso l'alto.", anim:"table_row" },
-      { id:"squat", n:"Squat", v:"3 × 10–15", r:60, sets:3, d:"Piedi larghezza spalle. Scendi mantenendo il peso sui talloni e il tronco eretto.", anim:"squat" },
-      { id:"bridge", n:"Glute bridge", v:"3 × 12–15", r:60, sets:3, d:"Supino, piedi a terra. Spingi il bacino in alto contraendo glutei e femorali.", anim:"bridge" },
-      { id:"plank", n:"Plank", v:"3 × 20–30 s", r:60, sets:3, isTime:true, d:"Gomiti sotto le spalle, corpo allineato come un'asse, addome e glutei serrati.", anim:"plank" }
+      { id:"pushup_table", n:"Push-up inclinati", v:"3 × 6–10", timeSec:30, r:75, sets:3, d:"Mani su tavolo robusto. Corpo in linea solida, scendi col petto al bordo e risali controllando.", anim:"pushup_table" },
+      { id:"table_row", n:"Row al tavolo", v:"3 × 6–10", timeSec:30, r:75, sets:3, d:"Sdraiati sotto un tavolo stabile. Afferra il bordo saldamente e tira il petto verso l'alto.", anim:"table_row" },
+      { id:"squat", n:"Squat", v:"3 × 10–15", timeSec:40, r:60, sets:3, d:"Piedi larghezza spalle. Scendi mantenendo il peso sui talloni e il tronco eretto.", anim:"squat" },
+      { id:"bridge", n:"Glute bridge", v:"3 × 12–15", timeSec:35, r:60, sets:3, d:"Supino, piedi a terra. Spingi il bacino in alto contraendo glutei e femorali.", anim:"bridge" },
+      { id:"plank", n:"Plank", v:"3 × 20–30 s", timeSec:30, r:60, sets:3, isTime:true, d:"Gomiti sotto le spalle, corpo allineato come un'asse, addome e glutei serrati.", anim:"plank" }
     ]},
     B: { title: "Giorno B — Spinta e core", ex: [
-      { id:"pushup_wall", n:"Push-up al muro", v:"3 × 8–12", r:60, sets:3, d:"Mani al muro ad altezza petto. Piega i gomiti in diagonale e mantieni il tronco stabile.", anim:"pushup_wall" },
-      { id:"dip", n:"Dip su sedia", v:"3 × 6–10", r:75, sets:3, d:"Mani su sedia stabile. Abbassa il bacino piegando i gomiti fino a 90° e risali.", anim:"dip" },
-      { id:"pike", n:"Pike push-up parziali", v:"3 × 5–8", r:75, sets:3, d:"Bacino sollevato a V rovesciata, fletti le braccia guidando la testa avanti.", anim:"pike" },
-      { id:"deadbug", n:"Dead bug", v:"3 × 8/lato", r:60, sets:3, d:"Supino a 90°. Estendi braccio e gamba opposti mantenendo la zona lombare a terra.", anim:"deadbug" },
-      { id:"climber", n:"Mountain climber lento", v:"3 × 20 tot.", r:60, sets:3, d:"Plank alto, porta un ginocchio al petto alla volta in modo controllato.", anim:"climber" }
+      { id:"pushup_wall", n:"Push-up al muro", v:"3 × 8–12", timeSec:30, r:60, sets:3, d:"Mani al muro ad altezza petto. Piega i gomiti in diagonale e mantieni il tronco stabile.", anim:"pushup_wall" },
+      { id:"dip", n:"Dip su sedia", v:"3 × 6–10", timeSec:30, r:75, sets:3, d:"Mani su sedia stabile. Abbassa il bacino piegando i gomiti fino a 90° e risali.", anim:"dip" },
+      { id:"pike", n:"Pike push-up parziali", v:"3 × 5–8", timeSec:25, r:75, sets:3, d:"Bacino sollevato a V rovesciata, fletti le braccia guidando la testa avanti.", anim:"pike" },
+      { id:"deadbug", n:"Dead bug", v:"3 × 8/lato", timeSec:35, r:60, sets:3, d:"Supino a 90°. Estendi braccio e gamba opposti mantenendo la zona lombare a terra.", anim:"deadbug" },
+      { id:"climber", n:"Mountain climber lento", v:"3 × 20 tot.", timeSec:30, r:60, sets:3, d:"Plank alto, porta un ginocchio al petto alla volta in modo controllato.", anim:"climber" }
     ]},
     C: { title: "Giorno C — Gambe e core", ex: [
-      { id:"squat", n:"Squat", v:"3 × 12–15", r:60, sets:3, d:"Piedi larghezza spalle, scendi controllato fino a cosce parallele a terra.", anim:"squat" },
-      { id:"lunge", n:"Affondo posteriore assistito", v:"3 × 8/gamba", r:60, sets:3, d:"Passo indietro controllato, il ginocchio sfiora il pavimento.", anim:"lunge" },
-      { id:"calf", n:"Calf raise", v:"3 × 15–20", r:60, sets:3, d:"Spingi sulle punte dei piedi, mantieni 1 secondo in alto e scendi lentamente.", anim:"calf" },
-      { id:"superman", n:"Superman", v:"3 × 10–12", r:60, sets:3, d:"Prono, solleva simultaneamente petto e gambe contraendo la catena posteriore.", anim:"superman" },
-      { id:"sideplank", n:"Side plank ginocchia", v:"3 × 15–20 s/lato", r:60, sets:3, isTime:true, d:"Avambraccio a terra, solleva il bacino in linea dalle ginocchia alle spalle.", anim:"sideplank" }
+      { id:"squat", n:"Squat", v:"3 × 12–15", timeSec:40, r:60, sets:3, d:"Piedi larghezza spalle, scendi controllato fino a cosce parallele a terra.", anim:"squat" },
+      { id:"lunge", n:"Affondo posteriore assistito", v:"3 × 8/gamba", timeSec:35, r:60, sets:3, d:"Passo indietro controllato, il ginocchio sfiora il pavimento.", anim:"lunge" },
+      { id:"calf", n:"Calf raise", v:"3 × 15–20", timeSec:35, r:60, sets:3, d:"Spingi sulle punte dei piedi, mantieni 1 secondo in alto e scendi lentamente.", anim:"calf" },
+      { id:"superman", n:"Superman", v:"3 × 10–12", timeSec:30, r:60, sets:3, d:"Prono, solleva simultaneamente petto e gambe contraendo la catena posteriore.", anim:"superman" },
+      { id:"sideplank", n:"Side plank ginocchia", v:"3 × 15–20 s/lato", timeSec:25, r:60, sets:3, isTime:true, d:"Avambraccio a terra, solleva il bacino in linea dalle ginocchia alle spalle.", anim:"sideplank" }
     ]}
   },
   2: {
     name: "Livello 2 — Base Solida",
     A: { title: "Giorno A — Full body", ex: [
-      { id:"pushup_table", n:"Push-up inclinati bassi", v:"3 × 8–12", r:75, sets:3, d:"Mani su superficie piu bassa. Petto al bordo e spinta fluida.", anim:"pushup_table" },
-      { id:"table_row", n:"Row al tavolo", v:"3 × 8–12", r:75, sets:3, d:"Piedi piu avanti per inclinare il corpo. Tira forte col dorso.", anim:"table_row" },
-      { id:"squat", n:"Squat con pausa", v:"3 × 12–15", r:60, sets:3, d:"Squat con stop di 1 secondo nel punto piu basso.", anim:"squat" },
-      { id:"bridge", n:"Glute bridge 1 gamba", v:"3 × 8/gamba", r:60, sets:3, d:"Spinta monopodalica contraendo il gluteo in alto.", anim:"bridge" },
-      { id:"plank", n:"Plank", v:"3 × 30–40 s", r:60, sets:3, isTime:true, d:"Tenuta isometrica solida su avambracci.", anim:"plank" }
+      { id:"pushup_table", n:"Push-up inclinati bassi", v:"3 × 8–12", timeSec:35, r:75, sets:3, d:"Mani su superficie piu bassa. Petto al bordo e spinta fluida.", anim:"pushup_table" },
+      { id:"table_row", n:"Row al tavolo", v:"3 × 8–12", timeSec:35, r:75, sets:3, d:"Piedi piu avanti per inclinare il corpo. Tira forte col dorso.", anim:"table_row" },
+      { id:"squat", n:"Squat con pausa", v:"3 × 12–15", timeSec:45, r:60, sets:3, d:"Squat con stop di 1 secondo nel punto piu basso.", anim:"squat" },
+      { id:"bridge", n:"Glute bridge 1 gamba", v:"3 × 8/gamba", timeSec:35, r:60, sets:3, d:"Spinta monopodalica contraendo il gluteo in alto.", anim:"bridge" },
+      { id:"plank", n:"Plank", v:"3 × 30–40 s", timeSec:40, r:60, sets:3, isTime:true, d:"Tenuta isometrica solida su avambracci.", anim:"plank" }
     ]},
     B: { title: "Giorno B — Spinta e core", ex: [
-      { id:"pushup_floor", n:"Push-up standard", v:"3 × 6–8", r:90, sets:3, d:"Mani a terra, corpo a tavoletta, petto sfiora il pavimento.", anim:"pushup_floor" },
-      { id:"dip", n:"Dip su sedia", v:"3 × 8–12", r:75, sets:3, d:"Fletti i gomiti dietro la schiena mantenendo le spalle depressed.", anim:"dip" },
-      { id:"pike", n:"Pike push-up", v:"3 × 6–10", r:75, sets:3, d:"Spinta verticale a V per isolare le spalle.", anim:"pike" },
-      { id:"hollow", n:"Hollow hold", v:"3 × 20–30 s", r:60, sets:3, isTime:true, d:"Barchetta isometrica a ginocchia piegate.", anim:"hollow" },
-      { id:"climber", n:"Mountain climber", v:"3 × 30 s", r:60, sets:3, isTime:true, d:"Plank dinamico alternando le ginocchia.", anim:"climber" }
+      { id:"pushup_floor", n:"Push-up standard", v:"3 × 6–8", timeSec:30, r:90, sets:3, d:"Mani a terra, corpo a tavoletta, petto sfiora il pavimento.", anim:"pushup_floor" },
+      { id:"dip", n:"Dip su sedia", v:"3 × 8–12", timeSec:35, r:75, sets:3, d:"Fletti i gomiti dietro la schiena mantenendo le spalle depressed.", anim:"dip" },
+      { id:"pike", n:"Pike push-up", v:"3 × 6–10", timeSec:30, r:75, sets:3, d:"Spinta verticale a V per isolare le spalle.", anim:"pike" },
+      { id:"hollow", n:"Hollow hold", v:"3 × 20–30 s", timeSec:30, r:60, sets:3, isTime:true, d:"Barchetta isometrica a ginocchia piegate.", anim:"hollow" },
+      { id:"climber", n:"Mountain climber", v:"3 × 30 s", timeSec:35, r:60, sets:3, isTime:true, d:"Plank dinamico alternando le ginocchia.", anim:"climber" }
     ]},
     C: { title: "Giorno C — Gambe e core", ex: [
-      { id:"squat", n:"Squat tempo", v:"3 × 10–12", r:60, sets:3, d:"Discesa lenta di 3 secondi prima di risalire.", anim:"squat" },
-      { id:"lunge", n:"Affondo posteriore", v:"3 × 10/gamba", r:60, sets:3, d:"Affondo libero senza sostegni.", anim:"lunge" },
-      { id:"calf", n:"Calf raise gradino", v:"3 × 15–20", r:60, sets:3, d:"Escursione completa su gradino.", anim:"calf" },
-      { id:"superman", n:"Superman hold", v:"3 × 10–12", r:60, sets:3, d:"Tenuta di 2 secondi ad ogni ripetizione.", anim:"superman" },
-      { id:"sideplank", n:"Side plank", v:"3 × 20–30 s/lato", r:60, sets:3, isTime:true, d:"Tenuta laterale completa a gambe tese.", anim:"sideplank" }
+      { id:"squat", n:"Squat tempo", v:"3 × 10–12", timeSec:45, r:60, sets:3, d:"Discesa lenta di 3 secondi prima di risalire.", anim:"squat" },
+      { id:"lunge", n:"Affondo posteriore", v:"3 × 10/gamba", timeSec:40, r:60, sets:3, d:"Affondo libero senza sostegni.", anim:"lunge" },
+      { id:"calf", n:"Calf raise gradino", v:"3 × 15–20", timeSec:40, r:60, sets:3, d:"Escursione completa su gradino.", anim:"calf" },
+      { id:"superman", n:"Superman hold", v:"3 × 10–12", timeSec:35, r:60, sets:3, d:"Tenuta di 2 secondi ad ogni ripetizione.", anim:"superman" },
+      { id:"sideplank", n:"Side plank", v:"3 × 20–30 s/lato", timeSec:30, r:60, sets:3, isTime:true, d:"Tenuta laterale completa a gambe tese.", anim:"sideplank" }
     ]}
   },
   3: {
     name: "Livello 3 — Intermedio Iniziale",
     A: { title: "Giorno A — Full body", ex: [
-      { id:"pushup_floor", n:"Push-up standard", v:"4 × 6–10", r:90, sets:4, d:"Esecuzione perfetta a terra con controllo.", anim:"pushup_floor" },
-      { id:"table_row", n:"Row al tavolo", v:"4 × 8–12", r:90, sets:4, d:"Corpo completamente orizzontale.", anim:"table_row" },
-      { id:"bulgarian", n:"Squat bulgaro", v:"3 × 8/gamba", r:75, sets:3, d:"Piede posteriore su sedia, discesa profonda.", anim:"bulgarian" },
-      { id:"bridge", n:"Glute bridge 1 gamba", v:"3 × 10/gamba", r:60, sets:3, d:"Spinta potente ad una gamba.", anim:"bridge" },
-      { id:"hollow", n:"Hollow hold", v:"3 × 25–35 s", r:60, sets:3, isTime:true, d:"Barchetta completa con lombare incollata.", anim:"hollow" }
+      { id:"pushup_floor", n:"Push-up standard", v:"4 × 6–10", timeSec:35, r:90, sets:4, d:"Esecuzione perfetta a terra con controllo.", anim:"pushup_floor" },
+      { id:"table_row", n:"Row al tavolo", v:"4 × 8–12", timeSec:40, r:90, sets:4, d:"Corpo completamente orizzontale.", anim:"table_row" },
+      { id:"bulgarian", n:"Squat bulgaro", v:"3 × 8/gamba", timeSec:40, r:75, sets:3, d:"Piede posteriore su sedia, discesa profonda.", anim:"bulgarian" },
+      { id:"bridge", n:"Glute bridge 1 gamba", v:"3 × 10/gamba", timeSec:40, r:60, sets:3, d:"Spinta potente ad una gamba.", anim:"bridge" },
+      { id:"hollow", n:"Hollow hold", v:"3 × 25–35 s", timeSec:35, r:60, sets:3, isTime:true, d:"Barchetta completa con lombare incollata.", anim:"hollow" }
     ]},
     B: { title: "Giorno B — Upper body", ex: [
-      { id:"pushup_floor", n:"Push-up standard", v:"4 × 8–12", r:90, sets:4, d:"Push-up completi con petto a terra.", anim:"pushup_floor" },
-      { id:"table_row", n:"Row tavolo supino", v:"4 × 8–12", r:90, sets:4, d:"Presa supina per maggior enfasi bicipiti.", anim:"table_row" },
-      { id:"dip", n:"Dip sedia avanzati", v:"3 × 8–12", r:90, sets:3, d:"Gambe distese in avanti per caricare di piu.", anim:"dip" },
-      { id:"pike", n:"Pike push-up", v:"3 × 8–10", r:90, sets:3, d:"Busto a triangolo spinta di spalle.", anim:"pike" },
-      { id:"climber", n:"Shoulder tap", v:"3 × 16 tot.", r:60, sets:3, d:"Tocco spalla alternato in plank.", anim:"climber" }
+      { id:"pushup_floor", n:"Push-up standard", v:"4 × 8–12", timeSec:40, r:90, sets:4, d:"Push-up completi con petto a terra.", anim:"pushup_floor" },
+      { id:"table_row", n:"Row tavolo supino", v:"4 × 8–12", timeSec:40, r:90, sets:4, d:"Presa supina per maggior enfasi bicipiti.", anim:"table_row" },
+      { id:"dip", n:"Dip sedia avanzati", v:"3 × 8–12", timeSec:40, r:90, sets:3, d:"Gambe distese in avanti per caricare di piu.", anim:"dip" },
+      { id:"pike", n:"Pike push-up", v:"3 × 8–10", timeSec:35, r:90, sets:3, d:"Busto a triangolo spinta di spalle.", anim:"pike" },
+      { id:"climber", n:"Shoulder tap", v:"3 × 16 tot.", timeSec:35, r:60, sets:3, d:"Tocco spalla alternato in plank.", anim:"climber" }
     ]},
     C: { title: "Giorno C — Gambe e core", ex: [
-      { id:"squat", n:"Squat con carico", v:"4 × 10–15", r:90, sets:4, d:"Squat con zaino zavorrato.", anim:"squat" },
-      { id:"lunge", n:"Affondo alternato", v:"3 × 12/gamba", r:75, sets:3, d:"Affondi posteriori dinamici.", anim:"lunge" },
-      { id:"calf", n:"Calf 1 gamba", v:"3 × 10/gamba", r:60, sets:3, d:"Spinta su singola caviglia.", anim:"calf" },
-      { id:"superman", n:"Superman dinamico", v:"3 × 10/lato", r:60, sets:3, d:"Sollevamento incrociato braccio/gamba.", anim:"superman" },
-      { id:"sideplank", n:"Side plank stella", v:"3 × 25–35 s/lato", r:60, sets:3, isTime:true, d:"Plank laterale con gamba sollevata.", anim:"sideplank" }
+      { id:"squat", n:"Squat con carico", v:"4 × 10–15", timeSec:45, r:90, sets:4, d:"Squat con zaino zavorrato.", anim:"squat" },
+      { id:"lunge", n:"Affondo alternato", v:"3 × 12/gamba", timeSec:45, r:75, sets:3, d:"Affondi posteriori dinamici.", anim:"lunge" },
+      { id:"calf", n:"Calf 1 gamba", v:"3 × 10/gamba", timeSec:35, r:60, sets:3, d:"Spinta su singola caviglia.", anim:"calf" },
+      { id:"superman", n:"Superman dinamico", v:"3 × 10/lato", timeSec:35, r:60, sets:3, d:"Sollevamento incrociato braccio/gamba.", anim:"superman" },
+      { id:"sideplank", n:"Side plank stella", v:"3 × 25–35 s/lato", timeSec:35, r:60, sets:3, isTime:true, d:"Plank laterale con gamba sollevata.", anim:"sideplank" }
     ]}
   },
   4: {
     name: "Livello 4 — Intermedio Avanzato",
     A: { title: "Giorno A — Full body", ex: [
-      { id:"pushup_decl", n:"Push-up declinati", v:"4 × 6–10", r:90, sets:4, d:"Piedi su sedia, petto a terra per il fascio alto.", anim:"pushup_decl" },
-      { id:"table_row", n:"Row tavolo piedi alti", v:"4 × 8–12", r:90, sets:4, d:"Piedi su sedia per massima inclinazione.", anim:"table_row" },
-      { id:"bulgarian", n:"Squat bulgaro", v:"4 × 10/gamba", r:90, sets:4, d:"Discesa verticale e risalita esplosiva.", anim:"bulgarian" },
-      { id:"bridge", n:"Hip thrust divano", v:"3 × 12–15", r:75, sets:3, d:"Scapole su divano ed estensione anca.", anim:"bridge" },
-      { id:"hollow", n:"Hollow hold avanzato", v:"3 × 30–40 s", r:60, sets:3, isTime:true, d:"Braccia tese oltre la testa.", anim:"hollow" }
+      { id:"pushup_decl", n:"Push-up declinati", v:"4 × 6–10", timeSec:35, r:90, sets:4, d:"Piedi su sedia, petto a terra per il fascio alto.", anim:"pushup_decl" },
+      { id:"table_row", n:"Row tavolo piedi alti", v:"4 × 8–12", timeSec:45, r:90, sets:4, d:"Piedi su sedia per massima inclinazione.", anim:"table_row" },
+      { id:"bulgarian", n:"Squat bulgaro", v:"4 × 10/gamba", timeSec:45, r:90, sets:4, d:"Discesa verticale e risalita esplosiva.", anim:"bulgarian" },
+      { id:"bridge", n:"Hip thrust divano", v:"3 × 12–15", timeSec:45, r:75, sets:3, d:"Scapole su divano ed estensione anca.", anim:"bridge" },
+      { id:"hollow", n:"Hollow hold avanzato", v:"3 × 30–40 s", timeSec:40, r:60, sets:3, isTime:true, d:"Braccia tese oltre la testa.", anim:"hollow" }
     ]},
     B: { title: "Giorno B — Upper body", ex: [
-      { id:"pushup_floor", n:"Push-up diamante", v:"3 × 6–10", r:90, sets:3, d:"Mani vicine pollice-indice.", anim:"pushup_floor" },
-      { id:"table_row", n:"Row tavolo fermo 1s", v:"4 × 8–12", r:90, sets:4, d:"Fermo isometrico al petto.", anim:"table_row" },
-      { id:"dip", n:"Dip sedia gambe tese", v:"4 × 8–12", r:90, sets:4, d:"Massimo affondo controllato.", anim:"dip" },
-      { id:"pike", n:"Pike push-up elevati", v:"3 × 6–10", r:90, sets:3, d:"Piedi su sedia e busto verticale.", anim:"pike" },
-      { id:"plank", n:"Plank a un arto", v:"3 × 20 s", r:60, sets:3, isTime:true, d:"Stabilizzazione con un braccio/gamba sollevato.", anim:"plank" }
+      { id:"pushup_floor", n:"Push-up diamante", v:"3 × 6–10", timeSec:35, r:90, sets:3, d:"Mani vicine pollice-indice.", anim:"pushup_floor" },
+      { id:"table_row", n:"Row tavolo fermo 1s", v:"4 × 8–12", timeSec:45, r:90, sets:4, d:"Fermo isometrico al petto.", anim:"table_row" },
+      { id:"dip", n:"Dip sedia gambe tese", v:"4 × 8–12", timeSec:45, r:90, sets:4, d:"Massimo affondo controllato.", anim:"dip" },
+      { id:"pike", n:"Pike push-up elevati", v:"3 × 6–10", timeSec:35, r:90, sets:3, d:"Piedi su sedia e busto verticale.", anim:"pike" },
+      { id:"plank", n:"Plank a un arto", v:"3 × 20 s", timeSec:35, r:60, sets:3, isTime:true, d:"Stabilizzazione con un braccio/gamba sollevato.", anim:"plank" }
     ]},
     C: { title: "Giorno C — Gambe e core", ex: [
-      { id:"squat", n:"Squat zaino pesante", v:"4 × 12–15", r:90, sets:4, d:"Carico elevato sul tronco.", anim:"squat" },
-      { id:"bulgarian", n:"Affondo bulgaro libero", v:"4 × 10/gamba", r:90, sets:4, d:"Affondo profondo continuo.", anim:"bulgarian" },
-      { id:"calf", n:"Calf 1 gamba gradino", v:"4 × 12/gamba", r:60, sets:4, d:"Massimo allungamento e spinta.", anim:"calf" },
-      { id:"superman", n:"Superman 3s stop", v:"3 × 12", r:60, sets:3, d:"Pausa in contrazione.", anim:"superman" },
-      { id:"sideplank", n:"Side plank sollevamento anca", v:"3 × 10/lato", r:60, sets:3, d:"Flessione ed estensione laterale del bacino.", anim:"sideplank" }
+      { id:"squat", n:"Squat zaino pesante", v:"4 × 12–15", timeSec:50, r:90, sets:4, d:"Carico elevato sul tronco.", anim:"squat" },
+      { id:"bulgarian", n:"Affondo bulgaro libero", v:"4 × 10/gamba", timeSec:45, r:90, sets:4, d:"Affondo profondo continuo.", anim:"bulgarian" },
+      { id:"calf", n:"Calf 1 gamba gradino", v:"4 × 12/gamba", timeSec:40, r:60, sets:4, d:"Massimo allungamento e spinta.", anim:"calf" },
+      { id:"superman", n:"Superman 3s stop", v:"3 × 12", timeSec:40, r:60, sets:3, d:"Pausa in contrazione.", anim:"superman" },
+      { id:"sideplank", n:"Side plank sollevamento anca", v:"3 × 10/lato", timeSec:35, r:60, sets:3, d:"Flessione ed estensione laterale del bacino.", anim:"sideplank" }
     ]}
   },
   5: {
     name: "Livello 5 — Consolidamento Elite",
     A: { title: "Giorno A — Full body", ex: [
-      { id:"pushup_decl", n:"Push-up declinati", v:"4 × 8–12", r:90, sets:4, d:"Piedi alti e petto a sfiorare terra.", anim:"pushup_decl" },
-      { id:"table_row", n:"Row tavolo piedi alti (stop 2s)", v:"4 × 10–12", r:90, sets:4, d:"Contrazione dorsale massima con pausa.", anim:"table_row" },
-      { id:"pistol", n:"Pistol squat assistito", v:"4 × 6–8/gamba", r:90, sets:4, d:"Squat su una gamba sola.", anim:"pistol" },
-      { id:"bridge", n:"Hip thrust 1 gamba", v:"3 × 10–12/gamba", r:75, sets:3, d:"Spinta ad un arto su divano.", anim:"bridge" },
-      { id:"hollow", n:"Hollow rock", v:"3 × 12–20", r:60, sets:3, d:"Dondolamento in tenuta hollow rigida.", anim:"hollow" }
+      { id:"pushup_decl", n:"Push-up declinati", v:"4 × 8–12", timeSec:45, r:90, sets:4, d:"Piedi alti e petto a sfiorare terra.", anim:"pushup_decl" },
+      { id:"table_row", n:"Row tavolo piedi alti (stop 2s)", v:"4 × 10–12", timeSec:50, r:90, sets:4, d:"Contrazione dorsale massima con pausa.", anim:"table_row" },
+      { id:"pistol", n:"Pistol squat assistito", v:"4 × 6–8/gamba", timeSec:40, r:90, sets:4, d:"Squat su una gamba sola.", anim:"pistol" },
+      { id:"bridge", n:"Hip thrust 1 gamba", v:"3 × 10–12/gamba", timeSec:45, r:75, sets:3, d:"Spinta ad un arto su divano.", anim:"bridge" },
+      { id:"hollow", n:"Hollow rock", v:"3 × 12–20", timeSec:45, r:60, sets:3, d:"Dondolamento in tenuta hollow rigida.", anim:"hollow" }
     ]},
     B: { title: "Giorno B — Upper body", ex: [
-      { id:"pushup_floor", n:"Push-up stretti", v:"4 × 8–12", r:90, sets:4, d:"Mani vicine sotto il petto.", anim:"pushup_floor" },
-      { id:"table_row", n:"Row tavolo presa stretta", v:"4 × 10–12", r:90, sets:4, d:"Gomiti vicini al corpo.", anim:"table_row" },
-      { id:"dip", n:"Dip sedia tempo (3s discesa)", v:"4 × 10–15", r:90, sets:4, d:"Eccentrica rallentata.", anim:"dip" },
-      { id:"pike", n:"Pike push-up profondi", v:"4 × 8–12", r:90, sets:4, d:"Massimo range di movimento.", anim:"pike" },
-      { id:"plank", n:"Plank avanzato 1 arto", v:"3 × 30–40 s", r:60, sets:3, isTime:true, d:"Equilibrio e core di ferro.", anim:"plank" }
+      { id:"pushup_floor", n:"Push-up stretti", v:"4 × 8–12", timeSec:45, r:90, sets:4, d:"Mani vicine sotto il petto.", anim:"pushup_floor" },
+      { id:"table_row", n:"Row tavolo presa stretta", v:"4 × 10–12", timeSec:50, r:90, sets:4, d:"Gomiti vicini al corpo.", anim:"table_row" },
+      { id:"dip", n:"Dip sedia tempo (3s discesa)", v:"4 × 10–15", timeSec:50, r:90, sets:4, d:"Eccentrica rallentata.", anim:"dip" },
+      { id:"pike", n:"Pike push-up profondi", v:"4 × 8–12", timeSec:45, r:90, sets:4, d:"Massimo range di movimento.", anim:"pike" },
+      { id:"plank", n:"Plank avanzato 1 arto", v:"3 × 30–40 s", timeSec:45, r:60, sets:3, isTime:true, d:"Equilibrio e core di ferro.", anim:"plank" }
     ]},
     C: { title: "Giorno C — Gambe e core", ex: [
-      { id:"pistol", n:"Pistol squat assistito", v:"4 × 6–8/gamba", r:90, sets:4, d:"Controllo eccentrico monopodalico.", anim:"pistol" },
-      { id:"bulgarian", n:"Affondo bulgaro zavorrato", v:"4 × 12/gamba", r:90, sets:4, d:"Zaino pesante per sovraccarico.", anim:"bulgarian" },
-      { id:"calf", n:"Calf 1 gamba", v:"4 × 15/gamba", r:60, sets:4, d:"Movimento esplosivo.", anim:"calf" },
-      { id:"superman", n:"Superman isometrico", v:"3 × 15", r:60, sets:3, d:"Tenuta lombare avanzata.", anim:"superman" },
-      { id:"sideplank", n:"Side plank stella avanzato", v:"3 × 30–40 s/lato", r:60, sets:3, isTime:true, d:"Massima abduzione gamba superiore.", anim:"sideplank" }
+      { id:"pistol", n:"Pistol squat assistito", v:"4 × 6–8/gamba", timeSec:40, r:90, sets:4, d:"Controllo eccentrico monopodalico.", anim:"pistol" },
+      { id:"bulgarian", n:"Affondo bulgaro zavorrato", v:"4 × 12/gamba", timeSec:50, r:90, sets:4, d:"Zaino pesante per sovraccarico.", anim:"bulgarian" },
+      { id:"calf", n:"Calf 1 gamba", v:"4 × 15/gamba", timeSec:45, r:60, sets:4, d:"Movimento esplosivo.", anim:"calf" },
+      { id:"superman", n:"Superman isometrico", v:"3 × 15", timeSec:45, r:60, sets:3, d:"Tenuta lombare avanzata.", anim:"superman" },
+      { id:"sideplank", n:"Side plank stella avanzato", v:"3 × 30–40 s/lato", timeSec:45, r:60, sets:3, isTime:true, d:"Massima abduzione gamba superiore.", anim:"sideplank" }
     ]}
   }
 };
@@ -757,6 +849,7 @@ const WORKOUT_DB = {
 let state = {
   level: parseInt(localStorage.getItem("calis_level")) || 1,
   dayIndex: parseInt(localStorage.getItem("calis_dayIndex")) || 0,
+  workoutMode: localStorage.getItem("calis_workoutMode") || 'reps', // 'reps' o 'time'
   currentExIdx: 0,
   currentSet: 1,
   repsCount: 0,
@@ -769,6 +862,41 @@ let state = {
   selectedRPE: 8,
   history: JSON.parse(localStorage.getItem("calis_history") || "[]")
 };
+
+function setWorkoutMode(mode) {
+  state.workoutMode = mode;
+  localStorage.setItem("calis_workoutMode", mode);
+  
+  const btnReps = document.getElementById('mode-btn-reps');
+  const btnTime = document.getElementById('mode-btn-time');
+  const modeDesc = document.getElementById('mode-desc');
+
+  if (mode === 'reps') {
+    if (btnReps) {
+      btnReps.style.background = "linear-gradient(135deg, var(--accent), #0055b3)";
+      btnReps.style.color = "#ffffff";
+      btnReps.style.fontWeight = "700";
+    }
+    if (btnTime) {
+      btnTime.style.background = "var(--bg-elevated)";
+      btnTime.style.color = "var(--text-secondary)";
+      btnTime.style.fontWeight = "600";
+    }
+    if (modeDesc) modeDesc.innerText = "Modalità attiva: Ripetizioni standard per ciascun esercizio.";
+  } else {
+    if (btnTime) {
+      btnTime.style.background = "linear-gradient(135deg, var(--accent-orange), #c77500)";
+      btnTime.style.color = "#ffffff";
+      btnTime.style.fontWeight = "700";
+    }
+    if (btnReps) {
+      btnReps.style.background = "var(--bg-elevated)";
+      btnReps.style.color = "var(--text-secondary)";
+      btnReps.style.fontWeight = "600";
+    }
+    if (modeDesc) modeDesc.innerText = "Modalità attiva: Timer 30s a tempo con avviso acustico finale di STOP.";
+  }
+}
 
 const DAYS = ['A', 'B', 'C'];
 const DAY_LABELS = ['Giorno 1 (Giorno A)', 'Giorno 2 (Giorno B)', 'Giorno 3 (Giorno C)'];
@@ -1883,10 +2011,13 @@ function getCurrentExercise() {
 function loadExercisePreview() {
   const ex = getCurrentExercise();
   const routine = getCurrentRoutine();
+  const durSec = ex.timeSec || 30;
   
   document.getElementById('preview-badge').innerText = `Esercizio ${state.currentExIdx + 1} di ${routine.ex.length}`;
   document.getElementById('preview-name').innerText = ex.n;
-  document.getElementById('preview-target').innerText = `Serie ${state.currentSet} di ${ex.sets} • ${ex.v}`;
+  
+  const targetTxt = state.workoutMode === 'time' ? `Serie ${state.currentSet} di ${ex.sets} • ⏱️ ${durSec} Secondi (TUT)` : `Serie ${state.currentSet} di ${ex.sets} • ${ex.v}`;
+  document.getElementById('preview-target').innerText = targetTxt;
   document.getElementById('preview-instructions').innerText = ex.d;
   
   showScreen('screen-preview');
@@ -1896,6 +2027,7 @@ function loadExercisePreview() {
 function startExerciseExecution() {
   playBeep(750, 0.25);
   const ex = getCurrentExercise();
+  const durSec = ex.timeSec || 30;
   
   state.repsCount = 0;
   state.repTimes = [];
@@ -1903,10 +2035,20 @@ function startExerciseExecution() {
   
   document.getElementById('work-name').innerText = ex.n;
   document.getElementById('work-set').innerText = `Serie ${state.currentSet}/${ex.sets}`;
-  document.getElementById('target-volume').innerText = ex.v;
-  document.getElementById('rep-counter').innerText = '0';
-  document.getElementById('avg-rep-time').innerText = '0.0s';
-  document.getElementById('rep-timer').innerText = '00:00';
+  
+  if (state.workoutMode === 'time') {
+    document.getElementById('target-volume').innerText = `⏱️ ${durSec}s (TUT)`;
+    document.getElementById('rep-counter').innerText = `${durSec}s`;
+    document.getElementById('avg-rep-time').innerText = "Calisthenics";
+    const m = String(Math.floor(durSec / 60)).padStart(2, '0');
+    const s = String(durSec % 60).padStart(2, '0');
+    document.getElementById('rep-timer').innerText = `${m}:${s}`;
+  } else {
+    document.getElementById('target-volume').innerText = ex.v;
+    document.getElementById('rep-counter').innerText = '0';
+    document.getElementById('avg-rep-time').innerText = '0.0s';
+    document.getElementById('rep-timer').innerText = '00:00';
+  }
   
   showScreen('screen-workout');
   startCanvasAnimation('work-canvas', ex.anim);
@@ -1915,49 +2057,139 @@ function startExerciseExecution() {
   state.repInterval = setInterval(updateRepTimerUI, 100);
 }
 
-let appleWatchState = {
-  active: true,
-  currentBPM: 118,
-  totalKcal: 0,
-  intervalId: null
-};
+let diExpanded = false;
 
-function toggleAppleWatchSim() {
-  appleWatchState.active = !appleWatchState.active;
-  const badge = document.getElementById('watch-badge');
-  if (badge) {
-    badge.innerText = appleWatchState.active ? `⌚ Watch: ${appleWatchState.currentBPM} BPM` : `⌚ Watch: OFF`;
-    badge.style.opacity = appleWatchState.active ? "1" : "0.5";
+function toggleDynamicIslandExpand() {
+  triggerHaptic([15]);
+  const island = document.getElementById('dynamic-island');
+  diExpanded = !diExpanded;
+  if (island) island.classList.toggle('expanded', diExpanded);
+  
+  // Avvia l'animazione nel mini-canvas della Dynamic Island se espansa
+  if (diExpanded) {
+    const ex = getCurrentExercise();
+    if (ex) startCanvasAnimation('di-canvas', ex.anim);
   }
 }
 
-function updateBiometricsUI() {
-  if (!appleWatchState.active) return;
+function updateDynamicIslandUI(timerText, statusText, isRest = false) {
+  const ex = getCurrentExercise();
+  const exName = ex ? ex.n : "Workout";
+  
+  const titleCompact = document.getElementById('di-title-compact');
+  const timerCompact = document.getElementById('di-timer-compact');
+  const statusBadge = document.getElementById('di-status-badge');
+  const exNameEl = document.getElementById('di-ex-name');
+  const timerLarge = document.getElementById('di-timer-large');
+  const dotEl = document.getElementById('di-dot');
 
-  // Fluttuazione naturale del battito in base all'intensità
-  const fluctuation = Math.floor(Math.random() * 5) - 2;
-  appleWatchState.currentBPM = Math.min(175, Math.max(95, appleWatchState.currentBPM + fluctuation));
+  if (titleCompact) titleCompact.innerText = isRest ? "☕ Recupero" : `🏋️ ${exName}`;
+  if (timerCompact) {
+    timerCompact.innerText = timerText;
+    timerCompact.style.color = isRest ? "var(--accent-orange)" : "var(--accent-green)";
+  }
+  if (statusBadge) {
+    statusBadge.innerText = statusText;
+    statusBadge.style.color = isRest ? "var(--accent-orange)" : "var(--accent-green)";
+  }
+  if (exNameEl) exNameEl.innerText = exName;
+  if (timerLarge) {
+    timerLarge.innerText = timerText;
+    timerLarge.style.color = isRest ? "var(--accent-orange)" : "var(--accent-green)";
+  }
+  if (dotEl) dotEl.style.background = isRest ? "var(--accent-orange)" : "var(--accent-green)";
+}
 
-  // Stima attiva HealthKit: 0.12 kcal per secondo + fattore frequenza cardiaca
-  const kcalDelta = (0.12 + (appleWatchState.currentBPM - 100) * 0.0015);
-  appleWatchState.totalKcal += kcalDelta;
+let appleWatchState = {
+  connected: false,
+  device: null,
+  currentBPM: 0,
+  totalKcal: 0,
+  startTime: null
+};
 
+// INTEGRAZIONE WEBSPEC/BLUETOOTH REAL-TIME DA APPLE WATCH O FASCE CARDIO
+async function connectRealAppleWatch() {
+  triggerHaptic([20, 30]);
+  const badge = document.getElementById('watch-badge');
+
+  if (!navigator.bluetooth) {
+    alert("Web Bluetooth non supportato direttamente su questa scheda. Assicurati di usare Safari su iOS con permessi Bluetooth attivi o l'app Web companion.");
+    return;
+  }
+
+  try {
+    if (badge) badge.innerText = "⌚ Connessione...";
+    
+    // Richiede la connessione diretta al servizio standard GATT Heart Rate Service (0x180D)
+    const device = await navigator.bluetooth.requestDevice({
+      filters: [{ services: ['heart_rate'] }]
+    });
+
+    const server = await device.gatt.connect();
+    const service = await server.getPrimaryService('heart_rate');
+    const characteristic = await service.getCharacteristic('heart_rate_measurement');
+
+    await characteristic.startNotifications();
+    characteristic.addEventListener('characteristicvaluechanged', handleHeartRateMeasurement);
+
+    appleWatchState.connected = true;
+    appleWatchState.device = device;
+    appleWatchState.startTime = Date.now();
+
+    if (badge) {
+      badge.innerText = `⌚ Watch: Connesso Live`;
+      badge.style.background = "rgba(48, 209, 88, 0.2)";
+      badge.style.color = "#30d158";
+      badge.style.borderColor = "rgba(48, 209, 88, 0.4)";
+    }
+  } catch (err) {
+    console.warn("Bluetooth connection failed or cancelled", err);
+    if (badge) {
+      badge.innerText = `⌚ Connetti Watch / Cardio`;
+      badge.style.background = "rgba(255, 45, 85, 0.15)";
+      badge.style.color = "#ff2d55";
+    }
+  }
+}
+
+function handleHeartRateMeasurement(event) {
+  const value = event.target.value;
+  const flags = value.getUint8(0);
+  let bpm = 0;
+  
+  // Decodifica formato 8-bit o 16-bit Heart Rate Value segondo specifica Bluetooth SIG
+  if ((flags & 0x01) === 0) {
+    bpm = value.getUint8(1);
+  } else {
+    bpm = value.getUint16(1, true);
+  }
+
+  if (bpm > 0) {
+    appleWatchState.currentBPM = bpm;
+    // Calcolo consumo calorico reale su frequenza fisica misurata
+    const kcalDelta = (0.13 + (bpm - 90) * 0.0018);
+    appleWatchState.totalKcal += kcalDelta;
+    updateBiometricsUIReal(bpm);
+  }
+}
+
+function updateBiometricsUIReal(bpm) {
   const bpmEl = document.getElementById('work-bpm');
   const hrZoneEl = document.getElementById('work-hr-zone');
   const kcalEl = document.getElementById('work-kcal');
   const badgeEl = document.getElementById('watch-badge');
 
-  if (badgeEl) badgeEl.innerText = `⌚ Watch: ${appleWatchState.currentBPM} BPM`;
-
-  if (bpmEl) bpmEl.innerHTML = `${appleWatchState.currentBPM} <span style="font-size:0.75rem; color:var(--text-secondary);">BPM</span>`;
+  if (badgeEl) badgeEl.innerText = `⌚ Watch: ${bpm} BPM`;
+  if (bpmEl) bpmEl.innerHTML = `${bpm} <span style="font-size:0.75rem; color:var(--text-secondary);">BPM</span>`;
   if (kcalEl) kcalEl.innerHTML = `${Math.floor(appleWatchState.totalKcal)} <span style="font-size:0.75rem; color:var(--text-secondary);">kcal</span>`;
 
   if (hrZoneEl) {
-    if (appleWatchState.currentBPM < 115) {
+    if (bpm < 115) {
       hrZoneEl.innerText = "Zona 1 (Riscaldamento)"; hrZoneEl.style.color = "#30d158";
-    } else if (appleWatchState.currentBPM < 135) {
+    } else if (bpm < 135) {
       hrZoneEl.innerText = "Zona 2 (Brucia Grassi)"; hrZoneEl.style.color = "#0a84ff";
-    } else if (appleWatchState.currentBPM < 155) {
+    } else if (bpm < 155) {
       hrZoneEl.innerText = "Zona 3 (Cardio Aerobico)"; hrZoneEl.style.color = "#ff9f0a";
     } else {
       hrZoneEl.innerText = "Zona 4 (Anaerobico Max)"; hrZoneEl.style.color = "#ff453a";
@@ -1965,11 +2197,52 @@ function updateBiometricsUI() {
   }
 }
 
+function toggleAppleWatchSim() {
+  if (!appleWatchState.connected) {
+    connectRealAppleWatch();
+  }
+}
+
+function updateBiometricsUI() {
+  if (appleWatchState.connected && appleWatchState.currentBPM > 0) {
+    updateBiometricsUIReal(appleWatchState.currentBPM);
+  }
+}
+
 function updateRepTimerUI() {
   const elapsedSec = Math.floor((Date.now() - state.repStartTime) / 1000);
-  const m = String(Math.floor(elapsedSec / 60)).padStart(2, '0');
-  const s = String(elapsedSec % 60).padStart(2, '0');
-  document.getElementById('rep-timer').innerText = `${m}:${s}`;
+  const ex = getCurrentExercise();
+  const durSec = ex ? (ex.timeSec || 30) : 30;
+  let timerStr = "00:00";
+  
+  if (state.workoutMode === 'time') {
+    const timeRemaining = Math.max(0, durSec - elapsedSec);
+    const m = String(Math.floor(timeRemaining / 60)).padStart(2, '0');
+    const s = String(timeRemaining % 60).padStart(2, '0');
+    timerStr = `${m}:${s}`;
+    document.getElementById('rep-timer').innerText = timerStr;
+    document.getElementById('rep-counter').innerText = `${timeRemaining}s`;
+
+    if (timeRemaining <= 3 && timeRemaining > 0 && elapsedSec % 1 === 0) {
+      playBeep(600, 0.1);
+    }
+
+    if (timeRemaining <= 0) {
+      clearInterval(state.repInterval);
+      playBeep(1200, 0.6);
+      state.totalSessionReps += 10;
+      finishCurrentSet();
+      return;
+    }
+  } else {
+    const m = String(Math.floor(elapsedSec / 60)).padStart(2, '0');
+    const s = String(elapsedSec % 60).padStart(2, '0');
+    timerStr = `${m}:${s}`;
+    document.getElementById('rep-timer').innerText = timerStr;
+  }
+  
+  // Aggiorna la Dynamic Island in tempo reale durante la serie
+  updateDynamicIslandUI(timerStr, "SERIE ATTIVA", false);
   updateBiometricsUI();
 }
 
@@ -2025,19 +2298,31 @@ function startRestTimer(seconds, nextEx, nextSetInfo) {
   updateRestTimerDisplay();
   showScreen('screen-rest');
   startCanvasAnimation('rest-canvas', nextEx.anim);
+  if (diExpanded) startCanvasAnimation('di-canvas', nextEx.anim);
 
   if (state.restInterval) clearInterval(state.restInterval);
   state.restInterval = setInterval(() => {
     state.restRemaining--;
     updateRestTimerDisplay();
 
-    if (state.restRemaining <= 3 && state.restRemaining > 0) {
-      playBeep(550, 0.1);
+    const m = String(Math.floor(state.restRemaining / 60)).padStart(2, '0');
+    const s = String(state.restRemaining % 60).padStart(2, '0');
+    const restStr = `${m}:${s}`;
+    
+    // Aggiorna la Dynamic Island durante il recupero
+    updateDynamicIslandUI(restStr, "RECUPERO ATTIVO", true);
+
+    if (state.restRemaining <= 5 && state.restRemaining > 0) {
+      triggerHaptic([20]);
+      const pitchFreq = 500 + (6 - state.restRemaining) * 80;
+      playBeep(pitchFreq, 0.12);
     }
 
     if (state.restRemaining <= 0) {
       clearInterval(state.restInterval);
-      playBeep(920, 0.4);
+      triggerHaptic([30, 50, 30]);
+      playBeep(1000, 0.2);
+      setTimeout(() => playBeep(1300, 0.3), 150);
       loadExercisePreview();
     }
   }, 1000);
@@ -2157,6 +2442,7 @@ function clearData() {
 
 // Inizializzazione al caricamento
 updateSetupUI();
+setWorkoutMode(state.workoutMode);
 </script>
 </body>
 </html>
