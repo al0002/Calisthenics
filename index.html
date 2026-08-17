@@ -436,13 +436,13 @@
         </div>
         <div class="di-canvas-box">
           <canvas id="di-canvas" width="300" height="110"></canvas>
-          <video id="pip-video-stream" style="display:none;" playsinline muted loop webkit-playsinline></video>
+          <video id="pip-video-stream" src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" style="width:1px; height:1px; opacity:0.01; position:absolute;" playsinline muted loop webkit-playsinline controls></video>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.85rem; font-weight:700;">
           <span id="di-ex-name" style="color:#fff;">Push-up</span>
           <span id="di-timer-large" style="color:var(--accent-green); font-size:1.1rem;">00:00</span>
         </div>
-        <button class="btn btn-small" onclick="event.stopPropagation(); togglePiPManual()" style="background: rgba(10, 132, 255, 0.2); color: var(--accent); border: 1px solid rgba(10, 132, 255, 0.4); margin-top: 6px; font-size: 0.75rem;">
+        <button class="btn btn-small" onclick="event.stopPropagation(); togglePiPManual()" style="background: linear-gradient(135deg, var(--accent), #0055b3); color: #ffffff; border: 1px solid rgba(255,255,255,0.4); margin-top: 6px; font-size: 0.8rem; font-weight: 700;">
           📺 Attiva PiP (Finestra Galleggiante Home)
         </button>
       </div>
@@ -2106,32 +2106,34 @@ function toggleDynamicIslandExpand() {
 
 /* PICTURE-IN-PICTURE (PiP) PER SAFARI / iOS HOME */
 async function togglePiPManual() {
-  triggerHaptic([20, 40]);
-  try {
-    const video = document.getElementById('pip-video-stream');
-    const canvas = document.getElementById('di-canvas');
-    if (!video || !canvas) return;
+  triggerHaptic([25, 50]);
+  const video = document.getElementById('pip-video-stream');
+  if (!video) return;
 
-    // Crea lo stream video dal canvas 3D in tempo reale
-    if (!video.srcObject && (canvas.captureStream || canvas.webkitCaptureStream)) {
-      const stream = canvas.captureStream ? canvas.captureStream(30) : canvas.webkitCaptureStream(30);
-      video.srcObject = stream;
+  try {
+    // 1. Avvia la riproduzione video richiesta da Safari
+    if (video.paused) {
+      await video.play();
     }
 
-    video.play();
-
-    // Attivazione Picture-in-Picture compatibile sia con lo standard W3C che con webkit PresentationMode per iOS Safari
-    if (document.pictureInPictureElement) {
-      await document.exitPictureInPicture();
+    // 2. Attiva il Picture-in-Picture nativo per iOS (webkitSetPresentationMode) o standard W3C
+    if (video.webkitSetPresentationMode) {
+      video.webkitSetPresentationMode('picture-in-picture');
     } else if (video.requestPictureInPicture) {
-      await video.requestPictureInPicture();
-    } else if (video.webkitSupportsPresentationMode && video.webkitSupportsPresentationMode('picture-in-picture')) {
-      video.webkitSetPresentationMode(video.webkitPresentationMode === 'picture-in-picture' ? 'inline' : 'picture-in-picture');
+      if (document.pictureInPictureElement) {
+        await document.exitPictureInPicture();
+      } else {
+        await video.requestPictureInPicture();
+      }
     } else {
-      alert("Su questo dispositivo Safari richiede un tocco diretto sul player video per avviare il Picture-in-Picture.");
+      alert("La modalità Picture-in-Picture è supportata da Safari dopo il primo tocco del video.");
     }
   } catch (err) {
-    console.warn("PiP activation requires user gesture or canvas stream", err);
+    console.warn("PiP mode activation", err);
+    // In caso di rifiuto per sicurezza, esegue il fallback webkit
+    if (video.webkitSetPresentationMode) {
+      video.webkitSetPresentationMode('picture-in-picture');
+    }
   }
 }
 
