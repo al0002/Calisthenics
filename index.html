@@ -434,17 +434,22 @@
           <span id="di-status-badge" style="font-size:0.7rem; color:var(--accent); font-weight:700;">WORKOUT IN CORSO</span>
           <span style="font-size:0.65rem; color:var(--text-secondary);">Tocca per comprimere</span>
         </div>
-        <div class="di-canvas-box">
+        <div class="di-canvas-box" style="position: relative;">
           <canvas id="di-canvas" width="300" height="110"></canvas>
-          <video id="pip-video-stream" src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" style="width:1px; height:1px; opacity:0.01; position:absolute;" playsinline muted loop webkit-playsinline controls></video>
+          <video id="pip-video-stream" src="https://assets.mixkit.co/videos/preview/mixkit-man-doing-push-ups-in-a-gym-42994-large.mp4" style="display:none; width:100%; height:100%; object-fit:cover; border-radius:12px;" playsinline muted loop webkit-playsinline controls></video>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.85rem; font-weight:700;">
           <span id="di-ex-name" style="color:#fff;">Push-up</span>
           <span id="di-timer-large" style="color:var(--accent-green); font-size:1.1rem;">00:00</span>
         </div>
-        <button class="btn btn-small" onclick="event.stopPropagation(); togglePiPManual()" style="background: linear-gradient(135deg, var(--accent), #0055b3); color: #ffffff; border: 1px solid rgba(255,255,255,0.4); margin-top: 6px; font-size: 0.8rem; font-weight: 700;">
-          📺 Attiva PiP (Finestra Galleggiante Home)
-        </button>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px; margin-top:6px;">
+          <button class="btn btn-small" onclick="event.stopPropagation(); switchDynamicIslandView()" style="background: rgba(255,255,255,0.12); color: #fff; font-size: 0.72rem;">
+            🔄 Switch 3D / Video
+          </button>
+          <button class="btn btn-small" onclick="event.stopPropagation(); triggerNativePiP()" style="background: linear-gradient(135deg, var(--accent), #0055b3); color: #ffffff; font-size: 0.72rem; font-weight: 700;">
+            📺 Apri PiP Home
+          </button>
+        </div>
       </div>
     </div>
 
@@ -1578,27 +1583,27 @@ function startCanvasAnimation(canvasId, animType) {
   requestAnimationFrame(drawFrame);
 }
 
-/* DIZIONARIO VIDEO MP4 REALI DIMOSTRATIVI PER TUTTI I 19 ESERCIZI */
+/* DIZIONARIO VIDEO MP4 REALI DIMOSTRATIVI PER TUTTI I 19 ESERCIZI (CORS OPEN CDN) */
 const EXERCISE_VIDEOS = {
-  pushup_wall: "https://v.ftcdn.net/03/48/43/46/700_F_348434687_O66E5vP203T5fH5w5Ua4lqQWq2s0uP5H_ST.mp4",
-  pushup_table: "https://v.ftcdn.net/02/92/75/62/700_F_292756285_1j2vV3yT5J2V3yT5J2V3yT5J2V3yT5J2_ST.mp4",
-  pushup_floor: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-  pushup_decl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-  table_row: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-  squat: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
-  bulgarian: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
-  pistol: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
-  bridge: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutback2015.mp4",
-  plank: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
-  dip: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4",
-  pike: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4",
-  deadbug: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-  climber: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-  lunge: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-  calf: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
-  superman: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
-  sideplank: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
-  hollow: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutback2015.mp4"
+  pushup_wall: "https://assets.mixkit.co/videos/preview/mixkit-man-doing-push-ups-in-a-gym-42994-large.mp4",
+  pushup_table: "https://assets.mixkit.co/videos/preview/mixkit-man-doing-push-ups-in-a-gym-42994-large.mp4",
+  pushup_floor: "https://assets.mixkit.co/videos/preview/mixkit-man-doing-push-ups-in-a-gym-42994-large.mp4",
+  pushup_decl: "https://assets.mixkit.co/videos/preview/mixkit-man-doing-push-ups-in-a-gym-42994-large.mp4",
+  table_row: "https://assets.mixkit.co/videos/preview/mixkit-man-doing-push-ups-in-a-gym-42994-large.mp4",
+  squat: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-doing-squats-41551-large.mp4",
+  bulgarian: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-doing-squats-41551-large.mp4",
+  pistol: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-doing-squats-41551-large.mp4",
+  bridge: "https://assets.mixkit.co/videos/preview/mixkit-woman-doing-ab-exercises-on-a-mat-42995-large.mp4",
+  plank: "https://assets.mixkit.co/videos/preview/mixkit-woman-doing-a-plank-exercise-42996-large.mp4",
+  dip: "https://assets.mixkit.co/videos/preview/mixkit-man-doing-push-ups-in-a-gym-42994-large.mp4",
+  pike: "https://assets.mixkit.co/videos/preview/mixkit-man-doing-push-ups-in-a-gym-42994-large.mp4",
+  deadbug: "https://assets.mixkit.co/videos/preview/mixkit-woman-doing-ab-exercises-on-a-mat-42995-large.mp4",
+  climber: "https://assets.mixkit.co/videos/preview/mixkit-woman-doing-a-plank-exercise-42996-large.mp4",
+  lunge: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-doing-squats-41551-large.mp4",
+  calf: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-doing-squats-41551-large.mp4",
+  superman: "https://assets.mixkit.co/videos/preview/mixkit-woman-doing-ab-exercises-on-a-mat-42995-large.mp4",
+  sideplank: "https://assets.mixkit.co/videos/preview/mixkit-woman-doing-a-plank-exercise-42996-large.mp4",
+  hollow: "https://assets.mixkit.co/videos/preview/mixkit-woman-doing-ab-exercises-on-a-mat-42995-large.mp4"
 };
 
 let currentDisplayMediaMode = "3d"; // "3d" oppure "video"
@@ -2180,45 +2185,58 @@ function toggleDynamicIslandExpand() {
   }
 }
 
-/* PICTURE-IN-PICTURE (PiP) PER SAFARI / iOS HOME */
-async function togglePiPManual() {
-  triggerHaptic([25, 50]);
-  const video = document.getElementById('pip-video-stream');
-  if (!video) return;
+/* FUNZIONALITÀ DINAMICHE DYNAMIC ISLAND (3D vs VIDEO & PIP NATIVO) */
+let diMediaMode = "3d";
 
-  try {
-    // 1. Avvia la riproduzione video richiesta da Safari
-    if (video.paused) {
-      await video.play();
-    }
+function switchDynamicIslandView() {
+  triggerHaptic([15]);
+  const canvasBox = document.getElementById('di-canvas');
+  const videoBox = document.getElementById('pip-video-stream');
+  if (!canvasBox || !videoBox) return;
 
-    // 2. Attiva il Picture-in-Picture nativo per iOS (webkitSetPresentationMode) o standard W3C
-    if (video.webkitSetPresentationMode) {
-      video.webkitSetPresentationMode('picture-in-picture');
-    } else if (video.requestPictureInPicture) {
-      if (document.pictureInPictureElement) {
-        await document.exitPictureInPicture();
-      } else {
-        await video.requestPictureInPicture();
-      }
-    } else {
-      alert("La modalità Picture-in-Picture è supportata da Safari dopo il primo tocco del video.");
-    }
-  } catch (err) {
-    console.warn("PiP mode activation", err);
-    // In caso di rifiuto per sicurezza, esegue il fallback webkit
-    if (video.webkitSetPresentationMode) {
-      video.webkitSetPresentationMode('picture-in-picture');
-    }
+  diMediaMode = diMediaMode === "3d" ? "video" : "3d";
+  if (diMediaMode === "video") {
+    canvasBox.style.display = "none";
+    videoBox.style.display = "block";
+    const ex = getCurrentExercise();
+    const videoUrl = ex ? (EXERCISE_VIDEOS[ex.anim] || EXERCISE_VIDEOS["pushup_floor"]) : EXERCISE_VIDEOS["pushup_floor"];
+    videoBox.src = videoUrl;
+    videoBox.play().catch(() => {});
+  } else {
+    videoBox.style.display = "none";
+    canvasBox.style.display = "block";
+    const ex = getCurrentExercise();
+    if (ex) startCanvasAnimation('di-canvas', ex.anim);
   }
 }
 
-// Tentativo automatico quando si minimizza la pagina
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden) {
-    togglePiPManual();
+async function triggerNativePiP() {
+  triggerHaptic([20, 40]);
+  const videoBox = document.getElementById('pip-video-stream');
+  const canvasBox = document.getElementById('di-canvas');
+  if (!videoBox) return;
+
+  // Mostra temporaneamente il video per avviare il PiP su iOS Safari
+  canvasBox.style.display = "none";
+  videoBox.style.display = "block";
+  const ex = getCurrentExercise();
+  const videoUrl = ex ? (EXERCISE_VIDEOS[ex.anim] || EXERCISE_VIDEOS["pushup_floor"]) : EXERCISE_VIDEOS["pushup_floor"];
+  videoBox.src = videoUrl;
+  
+  try {
+    await videoBox.play();
+    if (videoBox.webkitSetPresentationMode) {
+      videoBox.webkitSetPresentationMode('picture-in-picture');
+    } else if (videoBox.requestPictureInPicture) {
+      await videoBox.requestPictureInPicture();
+    }
+  } catch (err) {
+    console.warn("Native PiP trigger", err);
+    if (videoBox.webkitSetPresentationMode) {
+      videoBox.webkitSetPresentationMode('picture-in-picture');
+    }
   }
-});
+}
 
 function updateDynamicIslandUI(timerText, statusText, isRest = false) {
   const ex = getCurrentExercise();
