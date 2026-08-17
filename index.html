@@ -1629,9 +1629,12 @@ function updateMediaContainers(animType) {
       prevCanvas.style.display = "none";
       prevVideo.style.display = "block";
       prevVideo.setAttribute("controls", "true");
-      prevVideo.src = videoUrl;
+      prevVideo.muted = true;
+      prevVideo.playsInline = true;
+      if (prevVideo.src !== videoUrl) prevVideo.src = videoUrl;
       prevVideo.play().catch(e => console.log("Safari Autoplay Policy", e));
     } else {
+      prevVideo.pause();
       prevVideo.style.display = "none";
       prevCanvas.style.display = "block";
       startCanvasAnimation("preview-canvas", animType);
@@ -1646,9 +1649,12 @@ function updateMediaContainers(animType) {
       workCanvas.style.display = "none";
       workVideo.style.display = "block";
       workVideo.setAttribute("controls", "true");
-      workVideo.src = videoUrl;
+      workVideo.muted = true;
+      workVideo.playsInline = true;
+      if (workVideo.src !== videoUrl) workVideo.src = videoUrl;
       workVideo.play().catch(e => console.log("Safari Autoplay Policy", e));
     } else {
+      workVideo.pause();
       workVideo.style.display = "none";
       workCanvas.style.display = "block";
       startCanvasAnimation("work-canvas", animType);
@@ -1727,11 +1733,21 @@ function toggleCatalogCardMedia(idx, animType) {
   if (isCurrentlyVideo) {
     vid.style.display = "none";
     canv.style.display = "block";
+    vid.pause();
     btn.innerText = "🎬 Passa a Video Reale MP4";
   } else {
     canv.style.display = "none";
     vid.style.display = "block";
-    vid.play().catch(() => {});
+    vid.muted = true;
+    vid.playsInline = true;
+    const playPromise = vid.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(error => {
+        console.log("Autoplay con audio bloccato, riprovo in mute:", error);
+        vid.muted = true;
+        vid.play();
+      });
+    }
     btn.innerText = "📹 Passa a Simulazione 3D";
   }
 }
