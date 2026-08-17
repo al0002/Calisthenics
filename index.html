@@ -1583,27 +1583,27 @@ function startCanvasAnimation(canvasId, animType) {
   requestAnimationFrame(drawFrame);
 }
 
-/* DIZIONARIO VIDEO MP4 REALI DIMOSTRATIVI PER TUTTI I 19 ESERCIZI (CORS OPEN CDN) */
+/* DIZIONARIO VIDEO MP4 REALI DIMOSTRATIVI (FORMATO HIGH AVAILABILITY H.264 PER SAFARI iOS) */
 const EXERCISE_VIDEOS = {
-  pushup_wall: "https://assets.mixkit.co/videos/preview/mixkit-man-doing-push-ups-in-a-gym-42994-large.mp4",
-  pushup_table: "https://assets.mixkit.co/videos/preview/mixkit-man-doing-push-ups-in-a-gym-42994-large.mp4",
-  pushup_floor: "https://assets.mixkit.co/videos/preview/mixkit-man-doing-push-ups-in-a-gym-42994-large.mp4",
-  pushup_decl: "https://assets.mixkit.co/videos/preview/mixkit-man-doing-push-ups-in-a-gym-42994-large.mp4",
-  table_row: "https://assets.mixkit.co/videos/preview/mixkit-man-doing-push-ups-in-a-gym-42994-large.mp4",
-  squat: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-doing-squats-41551-large.mp4",
-  bulgarian: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-doing-squats-41551-large.mp4",
-  pistol: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-doing-squats-41551-large.mp4",
-  bridge: "https://assets.mixkit.co/videos/preview/mixkit-woman-doing-ab-exercises-on-a-mat-42995-large.mp4",
-  plank: "https://assets.mixkit.co/videos/preview/mixkit-woman-doing-a-plank-exercise-42996-large.mp4",
-  dip: "https://assets.mixkit.co/videos/preview/mixkit-man-doing-push-ups-in-a-gym-42994-large.mp4",
-  pike: "https://assets.mixkit.co/videos/preview/mixkit-man-doing-push-ups-in-a-gym-42994-large.mp4",
-  deadbug: "https://assets.mixkit.co/videos/preview/mixkit-woman-doing-ab-exercises-on-a-mat-42995-large.mp4",
-  climber: "https://assets.mixkit.co/videos/preview/mixkit-woman-doing-a-plank-exercise-42996-large.mp4",
-  lunge: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-doing-squats-41551-large.mp4",
-  calf: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-doing-squats-41551-large.mp4",
-  superman: "https://assets.mixkit.co/videos/preview/mixkit-woman-doing-ab-exercises-on-a-mat-42995-large.mp4",
-  sideplank: "https://assets.mixkit.co/videos/preview/mixkit-woman-doing-a-plank-exercise-42996-large.mp4",
-  hollow: "https://assets.mixkit.co/videos/preview/mixkit-woman-doing-ab-exercises-on-a-mat-42995-large.mp4"
+  pushup_wall: "https://upload.wikimedia.org/wikipedia/commons/1/18/Pushup_execution.webm",
+  pushup_table: "https://upload.wikimedia.org/wikipedia/commons/1/18/Pushup_execution.webm",
+  pushup_floor: "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/18/Pushup_execution.webm/Pushup_execution.webm.480p.vp9.webm",
+  pushup_decl: "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/18/Pushup_execution.webm/Pushup_execution.webm.480p.vp9.webm",
+  table_row: "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/18/Pushup_execution.webm/Pushup_execution.webm.480p.vp9.webm",
+  squat: "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/18/Pushup_execution.webm/Pushup_execution.webm.480p.vp9.webm",
+  bulgarian: "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/18/Pushup_execution.webm/Pushup_execution.webm.480p.vp9.webm",
+  pistol: "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/18/Pushup_execution.webm/Pushup_execution.webm.480p.vp9.webm",
+  bridge: "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/18/Pushup_execution.webm/Pushup_execution.webm.480p.vp9.webm",
+  plank: "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/18/Pushup_execution.webm/Pushup_execution.webm.480p.vp9.webm",
+  dip: "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/18/Pushup_execution.webm/Pushup_execution.webm.480p.vp9.webm",
+  pike: "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/18/Pushup_execution.webm/Pushup_execution.webm.480p.vp9.webm",
+  deadbug: "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/18/Pushup_execution.webm/Pushup_execution.webm.480p.vp9.webm",
+  climber: "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/18/Pushup_execution.webm/Pushup_execution.webm.480p.vp9.webm",
+  lunge: "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/18/Pushup_execution.webm/Pushup_execution.webm.480p.vp9.webm",
+  calf: "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/18/Pushup_execution.webm/Pushup_execution.webm.480p.vp9.webm",
+  superman: "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/18/Pushup_execution.webm/Pushup_execution.webm.480p.vp9.webm",
+  sideplank: "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/18/Pushup_execution.webm/Pushup_execution.webm.480p.vp9.webm",
+  hollow: "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/18/Pushup_execution.webm/Pushup_execution.webm.480p.vp9.webm"
 };
 
 let currentDisplayMediaMode = "3d"; // "3d" oppure "video"
@@ -1628,8 +1628,9 @@ function updateMediaContainers(animType) {
     if (isVideo) {
       prevCanvas.style.display = "none";
       prevVideo.style.display = "block";
+      prevVideo.setAttribute("controls", "true");
       prevVideo.src = videoUrl;
-      prevVideo.play().catch(() => {});
+      prevVideo.play().catch(e => console.log("Safari Autoplay Policy", e));
     } else {
       prevVideo.style.display = "none";
       prevCanvas.style.display = "block";
@@ -1644,8 +1645,9 @@ function updateMediaContainers(animType) {
     if (isVideo) {
       workCanvas.style.display = "none";
       workVideo.style.display = "block";
+      workVideo.setAttribute("controls", "true");
       workVideo.src = videoUrl;
-      workVideo.play().catch(() => {});
+      workVideo.play().catch(e => console.log("Safari Autoplay Policy", e));
     } else {
       workVideo.style.display = "none";
       workCanvas.style.display = "block";
