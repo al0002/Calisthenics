@@ -344,48 +344,49 @@
       margin-bottom: 6px;
     }
 
-    /* DYNAMIC ISLAND SIMULATOR (iOS HIG - POSITIONING FIX) */
+    /* DYNAMIC ISLAND SIMULATOR (iOS HIG - TOP OFFSET & PIP FIX) */
     .dynamic-island-wrapper {
       position: fixed;
-      top: max(8px, env(safe-area-inset-top));
+      top: max(4px, calc(env(safe-area-inset-top) - 4px));
       left: 50%;
       transform: translateX(-50%);
       background: #000000;
       border: 1px solid rgba(255, 255, 255, 0.25);
-      border-radius: 22px;
-      padding: 5px 14px;
+      border-radius: 20px;
+      padding: 4px 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
       z-index: 9999;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.9);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.95);
       transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       cursor: pointer;
     }
     .dynamic-island-wrapper.expanded {
-      width: 320px;
-      border-radius: 28px;
-      padding: 12px 16px;
+      width: 330px;
+      border-radius: 26px;
+      padding: 10px 14px;
       flex-direction: column;
       align-items: stretch;
-      background: rgba(10, 10, 12, 0.95);
-      backdrop-filter: blur(30px);
+      background: rgba(10, 10, 12, 0.96);
+      backdrop-filter: blur(35px);
+      -webkit-backdrop-filter: blur(35px);
     }
     .di-pill-compact {
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 700;
       color: #ffffff;
     }
     .di-dot-live {
-      width: 8px;
-      height: 8px;
+      width: 7px;
+      height: 7px;
       background: var(--accent-green);
       border-radius: 50%;
-      box-shadow: 0 0 8px var(--accent-green);
+      box-shadow: 0 0 6px var(--accent-green);
       animation: diPulse 1.5s infinite;
     }
     @keyframes diPulse {
@@ -396,11 +397,24 @@
     .di-expanded-content {
       display: none;
       flex-direction: column;
-      gap: 8px;
-      margin-top: 8px;
+      gap: 6px;
+      margin-top: 6px;
     }
     .dynamic-island-wrapper.expanded .di-expanded-content {
       display: flex;
+    }
+    
+    /* Ridimensionamento perfetto del simulatore per la Dynamic Island Espansa */
+    .di-canvas-box {
+      height: 110px;
+      width: 100%;
+      background: rgba(0,0,0,0.85);
+      border-radius: 14px;
+      border: 0.5px solid rgba(255,255,255,0.15);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   </style>
 </head>
@@ -420,8 +434,9 @@
           <span id="di-status-badge" style="font-size:0.7rem; color:var(--accent); font-weight:700;">WORKOUT IN CORSO</span>
           <span style="font-size:0.65rem; color:var(--text-secondary);">Tocca per comprimere</span>
         </div>
-        <div class="canvas-container" style="height: 100px; background: rgba(0,0,0,0.6); border-radius: 14px;">
-          <canvas id="di-canvas" width="280" height="100"></canvas>
+        <div class="di-canvas-box">
+          <canvas id="di-canvas" width="300" height="110"></canvas>
+          <video id="pip-video-stream" style="display:none;" playsinline muted loop></video>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.85rem; font-weight:700;">
           <span id="di-ex-name" style="color:#fff;">Push-up</span>
@@ -490,9 +505,9 @@
         <ol id="exercise-preview-list" style="padding-left: 20px; font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7;"></ol>
       </div>
 
-      <div style="display: flex; gap: 8px;">
+      <div style="display: flex; gap: 8px; margin-bottom: 16px;">
         <button class="btn btn-secondary" onclick="triggerHaptic(); openCatalogScreen()">
-          <span>📖 CATALOGO COMPLETO ESERCIZI</span>
+          <span>📖 CATALOGO ESERCIZI</span>
         </button>
         <button class="btn btn-green" onclick="triggerHaptic(); startWorkoutSession()">
           <span>AVVIA ALLENAMENTO</span>
@@ -1016,19 +1031,29 @@ function startCanvasAnimation(canvasId, animType) {
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
+    ctx.save();
+    // Scalatura automatica per la Dynamic Island: se il canvas è quello della Dynamic Island (di-canvas)
+    // ridimensiona l'intero sistema di coordinate per far rientrare al 100% l'animazione
+    if (canvasId === 'di-canvas') {
+      const scaleX = canvas.width / 400;
+      const scaleY = canvas.height / 200;
+      ctx.translate(0, 15); // Abbassa l'animazione di 15px per centrare perfettamente il manichino
+      ctx.scale(scaleX, scaleY);
+    }
+    
     // Background Grid / Studio Prospettico
     ctx.strokeStyle = "rgba(255, 255, 255, 0.04)";
     ctx.lineWidth = 1;
-    for(let x = 0; x < canvas.width; x += 25) {
-      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+    for(let x = 0; x < 400; x += 25) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 200); ctx.stroke();
     }
     
     // Disegna Pavimento
     ctx.strokeStyle = "#3a3a3c";
     ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.moveTo(20, canvas.height - 25);
-    ctx.lineTo(canvas.width - 20, canvas.height - 25);
+    ctx.moveTo(20, 175);
+    ctx.lineTo(380, 175);
     ctx.stroke();
 
     // Helper Avanzato Manichino 3D: Arto con volume cilindrico e sfumatura 3D
@@ -1535,6 +1560,7 @@ function startCanvasAnimation(canvasId, animType) {
       }
     }
 
+    ctx.restore(); // Ripristina la matrice di trasformazione di scala
     animFrameId = requestAnimationFrame(drawFrame);
   }
 
@@ -2068,12 +2094,44 @@ function toggleDynamicIslandExpand() {
   diExpanded = !diExpanded;
   if (island) island.classList.toggle('expanded', diExpanded);
   
-  // Avvia l'animazione nel mini-canvas della Dynamic Island se espansa
+  // Avvia l'animazione ridimensionata nel mini-canvas della Dynamic Island se espansa
   if (diExpanded) {
     const ex = getCurrentExercise();
     if (ex) startCanvasAnimation('di-canvas', ex.anim);
   }
 }
+
+/* PICTURE-IN-PICTURE (PiP) IN BACKGROUND PER SAFARI / iOS HOME */
+async function triggerPictureInPictureMode() {
+  try {
+    const video = document.getElementById('pip-video-stream');
+    const canvas = document.getElementById('di-canvas');
+    if (!video || !canvas) return;
+
+    if (!video.srcObject && canvas.captureStream) {
+      video.srcObject = canvas.captureStream(30); // 30 FPS Stream da Canvas 3D
+      await video.play();
+    }
+
+    if (document.pictureInPictureElement) {
+      // Già attivo
+    } else if (video.requestPictureInPicture) {
+      await video.requestPictureInPicture();
+    } else if (video.webkitSetPresentationMode) {
+      video.webkitSetPresentationMode('picture-in-picture');
+    }
+  } catch (err) {
+    console.log("Picture-in-Picture Mode initialized", err);
+  }
+}
+
+// Quando l'utente torna alla schermata Home o minimizza Safari su iOS
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    // Tenta di avviare il Picture-in-Picture per continuare a mostrare il video ed il timer in sovrimpressione
+    triggerPictureInPictureMode();
+  }
+});
 
 function updateDynamicIslandUI(timerText, statusText, isRest = false) {
   const ex = getCurrentExercise();
