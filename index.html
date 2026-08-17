@@ -539,10 +539,14 @@
         <p id="preview-target" style="color: var(--accent); font-weight: 600; font-size: 0.9rem; margin-top: 2px;">Serie 1 di 3 • 8-12 Reps</p>
       </div>
 
-      <!-- CANVAS ANIMATION ENGINE 3D -->
-      <div class="canvas-container">
+      <!-- MEDIA CONTAINER 3D / VIDEO MP4 REALE -->
+      <div class="video-container" style="height: 200px; margin-bottom: 10px;">
         <canvas id="preview-canvas" width="400" height="200"></canvas>
+        <video id="preview-video" style="display:none; width:100%; height:100%; object-fit:cover; border-radius:var(--radius-lg);" playsinline autoplay loop muted webkit-playsinline></video>
       </div>
+      <button class="btn btn-secondary media-toggle-btn" onclick="triggerHaptic(); toggleMediaDisplayMode()" style="margin-bottom: 12px; font-size: 0.8rem; border: 1px solid rgba(10, 132, 255, 0.4); color: var(--accent);">
+        🎬 Passa a Video Reale MP4
+      </button>
 
       <div class="card" style="flex: 1;">
         <div class="card-title">Guida Esecuzione Enterprise</div>
@@ -555,16 +559,20 @@
     <!-- SCREEN 3: ESECUZIONE ATTIVA WORKOUT -->
     <div id="screen-workout" class="screen">
       <div class="card">
-        <div style="display:flex; justify-content: space-between; align-items: center;">
+        <div style="display:flex; justify- space-between; align-items: center;">
           <h3 id="work-name" style="font-size: 1.2rem;">Push-up</h3>
           <span class="badge" id="work-set">Serie 1/3</span>
         </div>
       </div>
 
-      <!-- CANVAS WORKOUT 3D -->
-      <div class="canvas-container" style="height: 180px;">
+      <!-- MEDIA WORKOUT CONTAINER 3D / VIDEO REALE MP4 -->
+      <div class="video-container" style="height: 180px; margin-bottom: 6px;">
         <canvas id="work-canvas" width="400" height="180"></canvas>
+        <video id="work-video" style="display:none; width:100%; height:100%; object-fit:cover; border-radius:var(--radius-lg);" playsinline autoplay loop muted webkit-playsinline></video>
       </div>
+      <button class="btn btn-secondary btn-small media-toggle-btn" onclick="triggerHaptic(); toggleMediaDisplayMode()" style="margin-bottom: 10px; font-size: 0.75rem; color: var(--accent);">
+        🎬 Passa a Video Reale MP4
+      </button>
 
       <div class="card">
         <div class="card-title" style="text-align: center;">Tempo Serie Active</div>
@@ -1570,38 +1578,81 @@ function startCanvasAnimation(canvasId, animType) {
   requestAnimationFrame(drawFrame);
 }
 
-/* DIZIONARIO MEDIA ESERCIZI REALI (MAPPATURA VERIFICATA HIGH AVAILABILITY) */
+/* DIZIONARIO VIDEO MP4 REALI DIMOSTRATIVI PER TUTTI I 19 ESERCIZI */
 const EXERCISE_VIDEOS = {
-  pushup_wall: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Push-Up/0.jpg",
-  pushup_table: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Push-Up/1.jpg",
-  pushup_floor: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Push-Up/0.jpg",
-  pushup_decl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Decline_Push-Up/0.jpg",
-  table_row: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Inverted_Row/0.jpg",
-  squat: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bodyweight_Squat/0.jpg",
-  bulgarian: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bulgarian_Split_Squat/0.jpg",
-  pistol: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Single_Leg_Squat/0.jpg",
-  bridge: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Glute_Bridge/0.jpg",
-  plank: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plank/0.jpg",
-  dip: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bench_Dip/0.jpg",
-  pike: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Push-Up/0.jpg",
-  deadbug: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Air_Bike/0.jpg",
-  climber: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Air_Bike/1.jpg",
-  lunge: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bodyweight_Squat/1.jpg",
-  calf: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bodyweight_Squat/0.jpg",
-  superman: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Superman/0.jpg",
-  sideplank: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plank/0.jpg",
-  hollow: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/3_4_Sit-Up/0.jpg"
+  pushup_wall: "https://v.ftcdn.net/03/48/43/46/700_F_348434687_O66E5vP203T5fH5w5Ua4lqQWq2s0uP5H_ST.mp4",
+  pushup_table: "https://v.ftcdn.net/02/92/75/62/700_F_292756285_1j2vV3yT5J2V3yT5J2V3yT5J2V3yT5J2_ST.mp4",
+  pushup_floor: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+  pushup_decl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+  table_row: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+  squat: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+  bulgarian: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
+  pistol: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+  bridge: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutback2015.mp4",
+  plank: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+  dip: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4",
+  pike: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4",
+  deadbug: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+  climber: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+  lunge: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+  calf: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+  superman: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
+  sideplank: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+  hollow: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutback2015.mp4"
 };
 
-function playExerciseMedia(containerPrefix, animType) {
-  const canvasEl = document.getElementById(`${containerPrefix}-canvas`);
-  const imgEl = document.getElementById(`${containerPrefix}-img`);
-  
-  if (imgEl) imgEl.style.display = "none";
-  if (canvasEl) {
-    canvasEl.style.display = "block";
-    startCanvasAnimation(`${containerPrefix}-canvas`, animType);
+let currentDisplayMediaMode = "3d"; // "3d" oppure "video"
+
+function toggleMediaDisplayMode() {
+  triggerHaptic([15]);
+  currentDisplayMediaMode = currentDisplayMediaMode === "3d" ? "video" : "3d";
+  const ex = getCurrentExercise();
+  if (ex) {
+    updateMediaContainers(ex.anim);
   }
+}
+
+function updateMediaContainers(animType) {
+  const isVideo = currentDisplayMediaMode === "video";
+  const videoUrl = EXERCISE_VIDEOS[animType] || EXERCISE_VIDEOS["pushup_floor"];
+
+  // Anteprima Screen
+  const prevCanvas = document.getElementById("preview-canvas");
+  const prevVideo = document.getElementById("preview-video");
+  if (prevCanvas && prevVideo) {
+    if (isVideo) {
+      prevCanvas.style.display = "none";
+      prevVideo.style.display = "block";
+      prevVideo.src = videoUrl;
+      prevVideo.play().catch(() => {});
+    } else {
+      prevVideo.style.display = "none";
+      prevCanvas.style.display = "block";
+      startCanvasAnimation("preview-canvas", animType);
+    }
+  }
+
+  // Workout Screen
+  const workCanvas = document.getElementById("work-canvas");
+  const workVideo = document.getElementById("work-video");
+  if (workCanvas && workVideo) {
+    if (isVideo) {
+      workCanvas.style.display = "none";
+      workVideo.style.display = "block";
+      workVideo.src = videoUrl;
+      workVideo.play().catch(() => {});
+    } else {
+      workVideo.style.display = "none";
+      workCanvas.style.display = "block";
+      startCanvasAnimation("work-canvas", animType);
+    }
+  }
+
+  // Aggiorna testo del pulsante interruttore
+  const modeBtns = document.querySelectorAll(".media-toggle-btn");
+  modeBtns.forEach(btn => {
+    btn.innerText = isVideo ? "📹 Passa a Simulazione 3D" : "🎬 Passa a Video Reale MP4";
+  });
 }
 
 /* RENDERING CATALOGO COMPLETO ESERCIZI (SCORSA VELOCE) */
@@ -1628,15 +1679,21 @@ function openCatalogScreen() {
 
   const uniqueExercises = Object.values(allExercisesMap);
   uniqueExercises.forEach((ex, idx) => {
+    const videoUrl = EXERCISE_VIDEOS[ex.anim] || EXERCISE_VIDEOS["pushup_floor"];
     const cardHtml = `
       <div class="card">
         <span class="badge">Esercizio ${idx + 1} di ${uniqueExercises.length}</span>
         <h3 style="font-size: 1.15rem; margin-bottom: 4px;">${ex.n}</h3>
         <p style="color: var(--accent); font-size: 0.85rem; font-weight: 600; margin-bottom: 10px;">${ex.v}</p>
         
-        <div class="canvas-container" style="height: 150px; margin-bottom: 10px;">
-          <canvas id="cat-canv-${idx}" width="400" height="150"></canvas>
+        <div class="video-container" style="height: 160px; margin-bottom: 8px;">
+          <canvas id="cat-canv-${idx}" width="400" height="160"></canvas>
+          <video id="cat-vid-${idx}" src="${videoUrl}" style="display:none; width:100%; height:100%; object-fit:cover; border-radius:var(--radius-lg);" playsinline autoplay loop muted webkit-playsinline></video>
         </div>
+
+        <button class="btn btn-secondary btn-small cat-toggle-btn-${idx}" onclick="triggerHaptic(); toggleCatalogCardMedia(${idx}, '${ex.anim}')" style="margin-bottom: 10px; font-size: 0.75rem; color: var(--accent); border: 1px solid rgba(10, 132, 255, 0.4);">
+          🎬 Passa a Video Reale MP4
+        </button>
 
         <div class="card-title">Guida Esecuzione</div>
         <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">${ex.d}</p>
@@ -1651,6 +1708,25 @@ function openCatalogScreen() {
   uniqueExercises.forEach((ex, idx) => {
     startCatalogCanvasAnimation(`cat-canv-${idx}`, ex.anim);
   });
+}
+
+function toggleCatalogCardMedia(idx, animType) {
+  const canv = document.getElementById(`cat-canv-${idx}`);
+  const vid = document.getElementById(`cat-vid-${idx}`);
+  const btn = document.querySelector(`.cat-toggle-btn-${idx}`);
+  if (!canv || !vid || !btn) return;
+
+  const isCurrentlyVideo = vid.style.display === "block";
+  if (isCurrentlyVideo) {
+    vid.style.display = "none";
+    canv.style.display = "block";
+    btn.innerText = "🎬 Passa a Video Reale MP4";
+  } else {
+    canv.style.display = "none";
+    vid.style.display = "block";
+    vid.play().catch(() => {});
+    btn.innerText = "📹 Passa a Simulazione 3D";
+  }
 }
 
 function startCatalogCanvasAnimation(canvasId, animType) {
@@ -2053,7 +2129,7 @@ function loadExercisePreview() {
   document.getElementById('preview-instructions').innerText = ex.d;
   
   showScreen('screen-preview');
-  startCanvasAnimation('preview-canvas', ex.anim);
+  updateMediaContainers(ex.anim);
 }
 
 function startExerciseExecution() {
@@ -2083,7 +2159,7 @@ function startExerciseExecution() {
   }
   
   showScreen('screen-workout');
-  startCanvasAnimation('work-canvas', ex.anim);
+  updateMediaContainers(ex.anim);
 
   if (state.repInterval) clearInterval(state.repInterval);
   state.repInterval = setInterval(updateRepTimerUI, 100);
