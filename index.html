@@ -436,12 +436,15 @@
         </div>
         <div class="di-canvas-box">
           <canvas id="di-canvas" width="300" height="110"></canvas>
-          <video id="pip-video-stream" style="display:none;" playsinline muted loop></video>
+          <video id="pip-video-stream" style="display:none;" playsinline muted loop webkit-playsinline></video>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.85rem; font-weight:700;">
           <span id="di-ex-name" style="color:#fff;">Push-up</span>
           <span id="di-timer-large" style="color:var(--accent-green); font-size:1.1rem;">00:00</span>
         </div>
+        <button class="btn btn-small" onclick="event.stopPropagation(); togglePiPManual()" style="background: rgba(10, 132, 255, 0.2); color: var(--accent); border: 1px solid rgba(10, 132, 255, 0.4); margin-top: 6px; font-size: 0.75rem;">
+          📺 Attiva PiP (Finestra Galleggiante Home)
+        </button>
       </div>
     </div>
 
@@ -2101,35 +2104,41 @@ function toggleDynamicIslandExpand() {
   }
 }
 
-/* PICTURE-IN-PICTURE (PiP) IN BACKGROUND PER SAFARI / iOS HOME */
-async function triggerPictureInPictureMode() {
+/* PICTURE-IN-PICTURE (PiP) PER SAFARI / iOS HOME */
+async function togglePiPManual() {
+  triggerHaptic([20, 40]);
   try {
     const video = document.getElementById('pip-video-stream');
     const canvas = document.getElementById('di-canvas');
     if (!video || !canvas) return;
 
-    if (!video.srcObject && canvas.captureStream) {
-      video.srcObject = canvas.captureStream(30); // 30 FPS Stream da Canvas 3D
-      await video.play();
+    // Crea lo stream video dal canvas 3D in tempo reale
+    if (!video.srcObject && (canvas.captureStream || canvas.webkitCaptureStream)) {
+      const stream = canvas.captureStream ? canvas.captureStream(30) : canvas.webkitCaptureStream(30);
+      video.srcObject = stream;
     }
 
+    video.play();
+
+    // Attivazione Picture-in-Picture compatibile sia con lo standard W3C che con webkit PresentationMode per iOS Safari
     if (document.pictureInPictureElement) {
-      // Già attivo
+      await document.exitPictureInPicture();
     } else if (video.requestPictureInPicture) {
       await video.requestPictureInPicture();
-    } else if (video.webkitSetPresentationMode) {
-      video.webkitSetPresentationMode('picture-in-picture');
+    } else if (video.webkitSupportsPresentationMode && video.webkitSupportsPresentationMode('picture-in-picture')) {
+      video.webkitSetPresentationMode(video.webkitPresentationMode === 'picture-in-picture' ? 'inline' : 'picture-in-picture');
+    } else {
+      alert("Su questo dispositivo Safari richiede un tocco diretto sul player video per avviare il Picture-in-Picture.");
     }
   } catch (err) {
-    console.log("Picture-in-Picture Mode initialized", err);
+    console.warn("PiP activation requires user gesture or canvas stream", err);
   }
 }
 
-// Quando l'utente torna alla schermata Home o minimizza Safari su iOS
+// Tentativo automatico quando si minimizza la pagina
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) {
-    // Tenta di avviare il Picture-in-Picture per continuare a mostrare il video ed il timer in sovrimpressione
-    triggerPictureInPictureMode();
+    togglePiPManual();
   }
 });
 
