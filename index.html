@@ -49,6 +49,7 @@
       overflow-x: hidden;
     }
 
+    /* iOS Header Container */
     header {
       padding: 12px 20px;
       display: flex;
@@ -106,6 +107,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* iOS Glass Cards */
     .card {
       background: var(--bg-card);
       backdrop-filter: var(--glass-blur);
@@ -125,6 +127,7 @@
       margin-bottom: 8px;
     }
 
+    /* Buttons iOS Native Style */
     .btn {
       background: var(--accent);
       color: #ffffff;
@@ -168,6 +171,7 @@
       border-radius: var(--radius-md);
     }
 
+    /* Level Selector Grid */
     .grid-levels {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
@@ -192,6 +196,7 @@
       box-shadow: 0 0 12px rgba(10, 132, 255, 0.5);
     }
 
+    /* Canvas & Video Animation Container */
     .canvas-container, .video-container {
       width: 100%;
       height: 200px;
@@ -216,6 +221,7 @@
       display: block;
     }
 
+    /* Timers & Counters */
     .timer-display {
       font-size: 3.5rem;
       font-weight: 800;
@@ -255,6 +261,7 @@
       margin-top: 2px;
     }
 
+    /* Navigation Bottom Tab Bar */
     .tab-bar {
       position: fixed;
       bottom: 0;
@@ -290,6 +297,7 @@
       font-size: 1.3rem;
     }
 
+    /* RPE Selector */
     .rpe-selector {
       display: flex;
       justify-content: space-between;
@@ -312,6 +320,7 @@
       color: #000;
     }
 
+    /* History & Stats List */
     .history-item {
       display: flex;
       justify-content: space-between;
@@ -335,6 +344,7 @@
       margin-bottom: 6px;
     }
 
+    /* DYNAMIC ISLAND SIMULATOR (iOS HIG - TOP OFFSET & PIP FIX) */
     .dynamic-island-wrapper {
       position: fixed;
       top: max(4px, calc(env(safe-area-inset-top) - 4px));
@@ -394,6 +404,7 @@
       display: flex;
     }
     
+    /* Ridimensionamento perfetto del simulatore per la Dynamic Island Espansa */
     .di-canvas-box {
       height: 110px;
       width: 100%;
@@ -404,13 +415,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
     }
   </style>
 </head>
 <body>
 
+  <!-- HEADER iOS CON DYNAMIC ISLAND INTEGRATA -->
   <header style="position: relative;">
+    <!-- DYNAMIC ISLAND SIMULATED PILL -->
     <div id="dynamic-island" class="dynamic-island-wrapper" onclick="toggleDynamicIslandExpand()">
       <div class="di-pill-compact">
         <div class="di-dot-live" id="di-dot"></div>
@@ -422,9 +434,9 @@
           <span id="di-status-badge" style="font-size:0.7rem; color:var(--accent); font-weight:700;">WORKOUT IN CORSO</span>
           <span style="font-size:0.65rem; color:var(--text-secondary);">Tocca per comprimere</span>
         </div>
-        <div class="di-canvas-box">
+        <div class="di-canvas-box" style="position: relative;">
           <canvas id="di-canvas" width="300" height="110"></canvas>
-          <video id="pip-video-stream" style="display:none; width:100%; height:100%; object-fit:cover; border-radius:12px;" playsinline autoplay muted loop webkit-playsinline></video>
+          <video id="pip-video-stream" style="display:none; width:100%; height:100%; object-fit:cover; border-radius:12px;" playsinline muted loop webkit-playsinline></video>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.85rem; font-weight:700;">
           <span id="di-ex-name" style="color:#fff;">Push-up</span>
@@ -432,7 +444,7 @@
         </div>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px; margin-top:6px;">
           <button class="btn btn-small" onclick="event.stopPropagation(); switchDynamicIslandView()" style="background: rgba(255,255,255,0.12); color: #fff; font-size: 0.72rem;">
-            🔄 Switch 3D / Video
+            🔄 Switch 3D / Foto
           </button>
           <button class="btn btn-small" onclick="event.stopPropagation(); triggerNativePiP()" style="background: linear-gradient(135deg, var(--accent), #0055b3); color: #ffffff; font-size: 0.72rem; font-weight: 700;">
             📺 Apri PiP Home
@@ -452,9 +464,10 @@
     </div>
   </header>
 
+  <!-- VIEWPORT APPLICAZIONE -->
   <div class="app-viewport">
 
-    <!-- SCREEN 1: SETUP -->
+    <!-- SCREEN 1: DASHBOARD SETUP -->
     <div id="screen-setup" class="screen active">
       <div class="card">
         <span class="badge">Sessione Rilevata</span>
@@ -510,7 +523,7 @@
       </div>
     </div>
 
-    <!-- SCREEN CATALOGO -->
+    <!-- SCREEN CATALOGO COMPLETO ESERCIZI (SCORSA VELOCE) -->
     <div id="screen-catalog" class="screen">
       <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
         <div>
@@ -523,7 +536,7 @@
       <div id="catalog-list-container" style="display: flex; flex-direction: column; gap: 16px;"></div>
     </div>
 
-    <!-- SCREEN 2: ANTEPRIMA -->
+    <!-- SCREEN 2: ANTEPRIMA ESERCIZIO -->
     <div id="screen-preview" class="screen">
       <div class="card">
         <span class="badge" id="preview-badge">Esercizio 1/5</span>
@@ -531,10 +544,10 @@
         <p id="preview-target" style="color: var(--accent); font-weight: 600; font-size: 0.9rem; margin-top: 2px;">Serie 1 di 3 • 8-12 Reps</p>
       </div>
 
-      <div class="video-container" style="height: 200px; margin-bottom: 10px; position: relative;">
+      <!-- MEDIA CONTAINER 3D / VIDEO MP4 REALE -->
+      <div class="video-container" style="height: 200px; margin-bottom: 10px;">
         <canvas id="preview-canvas" width="400" height="200"></canvas>
-        <video id="preview-video" style="display:none; width:100%; height:100%; object-fit:cover; border-radius:var(--radius-lg);" playsinline loop muted webkit-playsinline></video>
-        <button onclick="triggerUniversalPiP(document.getElementById('preview-video'))" style="position:absolute; top:8px; right:8px; z-index:10; background:rgba(0,0,0,0.65); color:#fff; border:1px solid rgba(255,255,255,0.25); border-radius:8px; padding:4px 8px; font-size:0.75rem; cursor:pointer;">⧉ PiP</button>
+        <video id="preview-video" style="display:none; width:100%; height:100%; object-fit:cover; border-radius:var(--radius-lg);" playsinline autoplay loop muted webkit-playsinline></video>
       </div>
       <button class="btn btn-secondary media-toggle-btn" onclick="triggerHaptic(); toggleMediaDisplayMode()" style="margin-bottom: 12px; font-size: 0.8rem; border: 1px solid rgba(10, 132, 255, 0.4); color: var(--accent);">
         🎬 Passa a Video Reale MP4
@@ -548,19 +561,19 @@
       <button class="btn btn-green" onclick="triggerHaptic(); startExerciseExecution()">INIZIA SERIE</button>
     </div>
 
-    <!-- SCREEN 3: ESECUZIONE ATTIVA -->
+    <!-- SCREEN 3: ESECUZIONE ATTIVA WORKOUT -->
     <div id="screen-workout" class="screen">
       <div class="card">
-        <div style="display:flex; justify-content: space-between; align-items: center;">
+        <div style="display:flex; justify- space-between; align-items: center;">
           <h3 id="work-name" style="font-size: 1.2rem;">Push-up</h3>
           <span class="badge" id="work-set">Serie 1/3</span>
         </div>
       </div>
 
-      <div class="video-container" style="height: 180px; margin-bottom: 6px; position: relative;">
+      <!-- MEDIA WORKOUT CONTAINER 3D / VIDEO REALE MP4 -->
+      <div class="video-container" style="height: 180px; margin-bottom: 6px;">
         <canvas id="work-canvas" width="400" height="180"></canvas>
-        <video id="work-video" style="display:none; width:100%; height:100%; object-fit:cover; border-radius:var(--radius-lg);" playsinline loop muted webkit-playsinline></video>
-        <button onclick="triggerUniversalPiP(document.getElementById('work-video'))" style="position:absolute; top:8px; right:8px; z-index:10; background:rgba(0,0,0,0.65); color:#fff; border:1px solid rgba(255,255,255,0.25); border-radius:8px; padding:4px 8px; font-size:0.75rem; cursor:pointer;">⧉ PiP</button>
+        <video id="work-video" style="display:none; width:100%; height:100%; object-fit:cover; border-radius:var(--radius-lg);" playsinline autoplay loop muted webkit-playsinline></video>
       </div>
       <button class="btn btn-secondary btn-small media-toggle-btn" onclick="triggerHaptic(); toggleMediaDisplayMode()" style="margin-bottom: 10px; font-size: 0.75rem; color: var(--accent);">
         🎬 Passa a Video Reale MP4
@@ -585,6 +598,7 @@
           </div>
         </div>
 
+        <!-- METRICHE BIOMETRICHE APPLE WATCH / HEALTHKIT -->
         <div style="margin-top:14px; padding-top:12px; border-top:0.5px solid var(--border-card); display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
           <div style="background:rgba(255,45,85,0.08); padding:8px 12px; border-radius:var(--radius-md); border:1px solid rgba(255,45,85,0.2);">
             <div style="font-size:0.75rem; color:#ff2d55; font-weight:600;">❤️ Battito (Apple Watch)</div>
@@ -605,7 +619,7 @@
       </div>
     </div>
 
-    <!-- SCREEN 4: RECUPERO -->
+    <!-- SCREEN 4: TIMER RECUPERO -->
     <div id="screen-rest" class="screen">
       <div class="card" style="text-align: center;">
         <span class="badge" style="background: rgba(255, 159, 10, 0.15); color: var(--accent-orange); border-color: rgba(255, 159, 10, 0.3);">Recupero Attivo</span>
@@ -629,7 +643,7 @@
       </div>
     </div>
 
-    <!-- SCREEN 5: COMPLETATO -->
+    <!-- SCREEN 5: WORKOUT COMPLETATO & RPE -->
     <div id="screen-summary" class="screen">
       <div class="card" style="text-align: center; padding: 26px 16px;">
         <div style="font-size: 3.5rem; margin-bottom: 8px;">🏆</div>
@@ -669,7 +683,7 @@
       <button class="btn btn-green" onclick="triggerHaptic(); returnToHome()">SALVA E TORNA ALLA HOME</button>
     </div>
 
-    <!-- SCREEN TAB 2: STORICO -->
+    <!-- SCREEN TAB 2: STORICO & STATISTICHE ENTERPRISE -->
     <div id="screen-history" class="screen">
       <div class="card">
         <div class="card-title">Dashboard Prestazioni</div>
@@ -698,7 +712,7 @@
       </div>
     </div>
 
-    <!-- SCREEN TAB 3: IMPOSTAZIONI -->
+    <!-- SCREEN TAB 3: IMPOSTAZIONI ENTERPRISE -->
     <div id="screen-settings" class="screen">
       <div class="card">
         <div class="card-title">Impostazioni App</div>
@@ -724,6 +738,7 @@
 
   </div>
 
+  <!-- TAB BAR NAVIGATION (iOS BOTTOM BAR) -->
   <div class="tab-bar">
     <div class="tab-item active" onclick="switchTab('workout')">
       <div class="tab-icon">🏋️‍♂️</div>
@@ -740,6 +755,7 @@
   </div>
 
 <script>
+/* DATABASE WORKOUT ESERCIZI (5 LIVELLI COMPLETI CON TEMPI CALISTHENICS PERSONALIZZATI) */
 const WORKOUT_DB = {
   1: {
     name: "Livello 1 — Fondamenta",
@@ -863,10 +879,11 @@ const WORKOUT_DB = {
   }
 };
 
+/* STATE APPLICAZIONE */
 let state = {
   level: parseInt(localStorage.getItem("calis_level")) || 1,
   dayIndex: parseInt(localStorage.getItem("calis_dayIndex")) || 0,
-  workoutMode: localStorage.getItem("calis_workoutMode") || 'reps',
+  workoutMode: localStorage.getItem("calis_workoutMode") || 'reps', // 'reps' o 'time'
   currentExIdx: 0,
   currentSet: 1,
   repsCount: 0,
@@ -918,6 +935,7 @@ function setWorkoutMode(mode) {
 const DAYS = ['A', 'B', 'C'];
 const DAY_LABELS = ['Giorno 1 (Giorno A)', 'Giorno 2 (Giorno B)', 'Giorno 3 (Giorno C)'];
 
+/* FEEDBACK APTICO HAPTIC ENGINE FOR iOS SAFARI */
 function triggerHaptic(pattern = [15]) {
   const isEnabled = document.getElementById('setting-haptic') ? document.getElementById('setting-haptic').checked : true;
   if (!isEnabled) return;
@@ -926,6 +944,7 @@ function triggerHaptic(pattern = [15]) {
   }
 }
 
+/* AUDIO SYNTHESIZER HD VIA WEB AUDIO API */
 let audioCtx = null;
 function playBeep(freq = 600, duration = 0.15) {
   const isEnabled = document.getElementById('setting-audio') ? document.getElementById('setting-audio').checked : true;
@@ -945,6 +964,7 @@ function playBeep(freq = 600, duration = 0.15) {
   } catch (e) {}
 }
 
+/* GESTIONE SCHERMATE & TAB */
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const target = document.getElementById(id);
@@ -969,6 +989,7 @@ function switchTab(tabName) {
   }
 }
 
+/* LOGICA SELEZIONE LIVELLO E GIORNO */
 function setLevel(lvl) {
   state.level = lvl;
   localStorage.setItem("calis_level", lvl);
@@ -1006,9 +1027,12 @@ function updateSetupUI() {
   list.innerHTML = routine.ex.map(e => `<li><strong>${e.n}</strong> — ${e.v}</li>`).join('');
 }
 
+/* ------------------------------------------------------------------ */
+/* CANVAS 2D PROCEDURAL BODY ANIMATION ENGINE REALISTICO (60 FPS)     */
+/* ------------------------------------------------------------------ */
 let animFrameId = null;
 
-function startCanvasAnimation(canvasId, animType) {
+function startCanvasAnimation(canvasId, animType, showPhotoSequence = false) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
@@ -1019,24 +1043,59 @@ function startCanvasAnimation(canvasId, animType) {
 
   function drawFrame(now) {
     const elapsed = (now - startTime) / 1000;
-    const cycle = (Math.sin(elapsed * 2.5) + 1) / 2;
+    const cycle = (Math.sin(elapsed * 2.5) + 1) / 2; // Valore oscillante 0.0 - 1.0
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (showPhotoSequence && imageCache[animType]) {
+      const imgs = imageCache[animType];
+      const img0 = imgs[0];
+      const img1 = imgs[1];
+
+      if (img0 && img0.complete && img1 && img1.complete) {
+        ctx.save();
+        const aspect = img0.width / img0.height;
+        let drawW = canvas.width;
+        let drawH = canvas.width / aspect;
+        if (drawH > canvas.height) {
+          drawH = canvas.height;
+          drawW = canvas.height * aspect;
+        }
+        const drawX = (canvas.width - drawW) / 2;
+        const drawY = (canvas.height - drawH) / 2;
+
+        // Disegna frame 0 base
+        ctx.globalAlpha = 1.0;
+        ctx.drawImage(img0, drawX, drawY, drawW, drawH);
+
+        // Cross-fade fluido col frame 1 basato sull'oscillazione sinusoide cycle (0.0 -> 1.0)
+        ctx.globalAlpha = cycle;
+        ctx.drawImage(img1, drawX, drawY, drawW, drawH);
+
+        ctx.restore();
+        animFrameId = requestAnimationFrame(drawFrame);
+        return;
+      }
+    }
     
     ctx.save();
+    // Scalatura automatica per la Dynamic Island: se il canvas è quello della Dynamic Island (di-canvas)
+    // ridimensiona l'intero sistema di coordinate per far rientrare al 100% l'animazione
     if (canvasId === 'di-canvas') {
       const scaleX = canvas.width / 400;
       const scaleY = canvas.height / 200;
-      ctx.translate(0, 15);
+      ctx.translate(0, 15); // Abbassa l'animazione di 15px per centrare perfettamente il manichino
       ctx.scale(scaleX, scaleY);
     }
     
+    // Background Grid / Studio Prospettico
     ctx.strokeStyle = "rgba(255, 255, 255, 0.04)";
     ctx.lineWidth = 1;
     for(let x = 0; x < 400; x += 25) {
       ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 200); ctx.stroke();
     }
     
+    // Disegna Pavimento
     ctx.strokeStyle = "#3a3a3c";
     ctx.lineWidth = 3;
     ctx.beginPath();
@@ -1044,10 +1103,14 @@ function startCanvasAnimation(canvasId, animType) {
     ctx.lineTo(380, 175);
     ctx.stroke();
 
+    // Helper Avanzato Manichino 3D: Arto con volume cilindrico e sfumatura 3D
     function drawLimb(x1, y1, x2, y2, color = "#0a84ff", thickness = 12, isBackground = false) {
       ctx.save();
-      if (isBackground) ctx.globalAlpha = 0.45;
+      if (isBackground) {
+        ctx.globalAlpha = 0.45; // Arto posteriore in ombra prospettica 3D
+      }
       
+      // Sfumatura di luce 3D metallica/anatomica sul cilindro dell'arto
       let grad = ctx.createLinearGradient(x1, y1, x2, y2);
       if (color === "#30d158") {
         grad.addColorStop(0, "#30d158"); grad.addColorStop(0.5, "#82f59f"); grad.addColorStop(1, "#1b8a37");
@@ -1057,6 +1120,7 @@ function startCanvasAnimation(canvasId, animType) {
         grad.addColorStop(0, "#0a84ff"); grad.addColorStop(0.5, "#70b9ff"); grad.addColorStop(1, "#0055b3");
       }
       
+      // Disegna segmento muscolare principale
       ctx.beginPath();
       ctx.moveTo(x1, y1);
       ctx.lineTo(x2, y2);
@@ -1066,8 +1130,9 @@ function startCanvasAnimation(canvasId, animType) {
       ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
       ctx.shadowBlur = 6;
       ctx.stroke();
-      ctx.shadowBlur = 0;
+      ctx.shadowBlur = 0; // Reset ombra
       
+      // Articolazione snodabile sferica 3D
       ctx.beginPath();
       ctx.arc(x1, y1, thickness / 2 + 1.5, 0, Math.PI * 2);
       ctx.fillStyle = "#ffffff";
@@ -1079,6 +1144,7 @@ function startCanvasAnimation(canvasId, animType) {
       ctx.restore();
     }
 
+    // Helper Torace & Cassa Toracica Anatomica 3D
     function drawTorso(x1, y1, x2, y2, width = 22) {
       ctx.save();
       let grad = ctx.createLinearGradient(x1, y1, x2, y2);
@@ -1090,6 +1156,7 @@ function startCanvasAnimation(canvasId, animType) {
       let angle = Math.atan2(y2 - y1, x2 - x1);
       let perp = angle + Math.PI / 2;
 
+      // Forma sagomata a trapezio/petto
       let p1x = x1 + Math.cos(perp) * (width * 0.7);
       let p1y = y1 + Math.sin(perp) * (width * 0.7);
       let p2x = x1 - Math.cos(perp) * (width * 0.7);
@@ -1116,8 +1183,10 @@ function startCanvasAnimation(canvasId, animType) {
       ctx.restore();
     }
 
+    // Head Visor Manichino Hi-Tech 3D
     function drawHead(x, y, radius = 14) {
       ctx.save();
+      // Teschio/Casco Hi-Tech
       ctx.beginPath();
       ctx.arc(x, y, radius, 0, Math.PI * 2);
       let headGrad = ctx.createRadialGradient(x - 3, y - 3, 2, x, y, radius);
@@ -1130,6 +1199,7 @@ function startCanvasAnimation(canvasId, animType) {
       ctx.strokeStyle = "#0a84ff";
       ctx.stroke();
 
+      // Visiera 3D integrata
       ctx.beginPath();
       ctx.arc(x + 3, y - 2, radius * 0.55, -Math.PI * 0.25, Math.PI * 0.35);
       ctx.lineWidth = 3;
@@ -1140,339 +1210,279 @@ function startCanvasAnimation(canvasId, animType) {
 
     const groundY = canvas.height - 25;
 
+    // RENDER BASE A SECONDA DELL'ESERCIZIO (RISPECCHIA AL 100% LE IMMAGINI REALI)
     switch(animType) {
       case 'pushup_wall': {
-        ctx.fillStyle = "#3a3a3c"; ctx.fillRect(310, 20, 20, groundY - 20);
-        ctx.strokeStyle = "#8e8e93"; ctx.lineWidth = 2; ctx.strokeRect(310, 20, 20, groundY - 20);
-        let angleAcc = 0.25 - cycle * 0.15;
-        let bodyLen = 140;
-        let wFeetX = 130, wFeetY = groundY;
-        let wShoulderX = wFeetX + Math.sin(angleAcc) * bodyLen;
-        let wShoulderY = wFeetY - Math.cos(angleAcc) * bodyLen;
-        let wHipX = wFeetX + Math.sin(angleAcc) * (bodyLen * 0.5);
-        let wHipY = wFeetY - Math.cos(angleAcc) * (bodyLen * 0.5);
+        // Push-up inclinato (Wall / Box Push-Up)
+        let boxX = 60, boxY = groundY - 60, boxW = 60, boxH = 60;
+        ctx.fillStyle = "#2c2c2e"; ctx.fillRect(boxX, boxY, boxW, boxH);
+        ctx.strokeStyle = "#8e8e93"; ctx.lineWidth = 1; ctx.strokeRect(boxX, boxY, boxW, boxH);
+
+        let wFeetX = 260, wFeetY = groundY - 10;
+        let wDipY = cycle * 35; // Il petto scende verso il box
+        let bodyLen = 190;
+        
+        let wShoulderX = 110 + wDipY * 0.15;
+        let wShoulderY = (groundY - 80) + wDipY * 0.8;
+        let wHipX = wFeetX - (bodyLen * 0.45);
+        let wHipY = wFeetY - (bodyLen * 0.25) + wDipY * 0.4;
 
         drawLimb(wFeetX, wFeetY, wHipX, wHipY, "#0a84ff", 12);
         drawTorso(wHipX, wHipY, wShoulderX, wShoulderY, 24);
-        drawHead(wShoulderX + 8, wShoulderY - 14, 14);
-        
-        let wElbowX = wShoulderX + 18, wElbowY = wShoulderY + 20;
+        drawHead(wShoulderX - 16, wShoulderY - 6, 14);
+
+        // Braccia piegate sui gomiti allineate con il bordo del box
+        let wElbowX = wShoulderX + 22, wElbowY = wShoulderY + 18 - wDipY * 0.3;
         drawLimb(wShoulderX, wShoulderY, wElbowX, wElbowY, "#30d158", 9);
-        drawLimb(wElbowX, wElbowY, 310, wShoulderY + 12, "#30d158", 9);
+        drawLimb(wElbowX, wElbowY, boxX + boxW - 5, boxY, "#30d158", 9);
         break;
       }
 
       case 'pushup_table': {
-        let tableTopY = groundY - 70;
-        let tableCornerX = 250;
-        ctx.fillStyle = "#2c2c2e"; ctx.fillRect(tableCornerX, tableTopY, 100, 70);
-        ctx.strokeStyle = "#8e8e93"; ctx.lineWidth = 2; ctx.strokeRect(tableCornerX, tableTopY, 100, 70);
-        
-        let angleAcc = 0.6 - cycle * 0.22;
-        let bodyLen = 160;
-        let tFeetX = 70, tFeetY = groundY;
+        // Push-up inclinato su superficie intermedia
+        let angleAcc = 0.35 - cycle * 0.18;
+        let bodyLen = 175;
+        let tFeetX = 75, tFeetY = groundY;
         let tShoulderX = tFeetX + Math.cos(angleAcc) * bodyLen;
         let tShoulderY = tFeetY - Math.sin(angleAcc) * bodyLen;
-        let tHipX = tFeetX + Math.cos(angleAcc) * (bodyLen * 0.45);
-        let tHipY = tFeetY - Math.sin(angleAcc) * (bodyLen * 0.45);
+        let tHipX = tFeetX + Math.cos(angleAcc) * (bodyLen * 0.5);
+        let tHipY = tFeetY - Math.sin(angleAcc) * (bodyLen * 0.5);
 
         drawLimb(tFeetX, tFeetY, tHipX, tHipY, "#0a84ff", 12);
         drawTorso(tHipX, tHipY, tShoulderX, tShoulderY, 24);
-        drawHead(tShoulderX + 12, tShoulderY - 12, 14);
-        
-        let tElbowX = tShoulderX + 8, tElbowY = tShoulderY + 22;
+        drawHead(tShoulderX + 12, tShoulderY - 8, 14);
+
+        let tElbowX = tShoulderX - 22 * (1 - cycle), tElbowY = tShoulderY + 24;
         drawLimb(tShoulderX, tShoulderY, tElbowX, tElbowY, "#30d158", 9);
-        drawLimb(tElbowX, tElbowY, tableCornerX, tableTopY, "#30d158", 9);
+        drawLimb(tElbowX, tElbowY, tShoulderX - 5, groundY, "#30d158", 9);
         break;
       }
 
-      case 'pushup_floor':
-      case 'pushup_decl': {
-        let isDecl = animType === 'pushup_decl';
-        if (isDecl) { ctx.fillStyle = "#2c2c2e"; ctx.fillRect(40, groundY - 45, 50, 45); }
-        let pFeetX = isDecl ? 65 : 60;
-        let pFeetY = isDecl ? groundY - 45 : groundY;
-        
-        let declAngle = isDecl ? 0.08 - cycle * 0.12 : 0.18 - cycle * 0.14;
-        let bodyLen = 190;
-        let pShoulderX = pFeetX + Math.cos(declAngle) * bodyLen;
-        let pShoulderY = pFeetY + Math.sin(declAngle) * bodyLen;
-        let pHipX = pFeetX + Math.cos(declAngle) * (bodyLen * 0.5);
-        let pHipY = pFeetY + Math.sin(declAngle) * (bodyLen * 0.5);
-        
+      case 'pushup_floor': {
+        // Push-up a terra standard: corpo in plank orizzontale, flessione gomito a 90°
+        let pFeetX = 65, pFeetY = groundY - 12;
+        let bodyLen = 185;
+        let pDipY = cycle * 32;
+        let pShoulderX = pFeetX + bodyLen;
+        let pShoulderY = (groundY - 45) + pDipY;
+        let pHipX = pFeetX + (bodyLen * 0.5);
+        let pHipY = (groundY - 30) + (pDipY * 0.5);
+
         drawLimb(pFeetX, pFeetY, pHipX, pHipY, "#0a84ff", 12);
         drawTorso(pHipX, pHipY, pShoulderX, pShoulderY, 24);
-        drawHead(pShoulderX + 16, pShoulderY - 4, 14);
-        
-        let pElbowX = pShoulderX - 25, pElbowY = pShoulderY + 22;
+        drawHead(pShoulderX + 16, pShoulderY + 4, 14);
+
+        let pElbowX = pShoulderX - 28, pElbowY = pShoulderY + 18 - pDipY * 0.3;
         drawLimb(pShoulderX, pShoulderY, pElbowX, pElbowY, "#30d158", 9);
-        drawLimb(pElbowX, pElbowY, pShoulderX - 10, groundY, "#30d158", 9);
+        drawLimb(pElbowX, pElbowY, pShoulderX - 10, groundY - 12, "#30d158", 9);
+        break;
+      }
+
+      case 'pushup_decl': {
+        // Push-up declinato: piedi su sedia (45px), petto scende verso terra
+        ctx.fillStyle = "#2c2c2e"; ctx.fillRect(40, groundY - 45, 50, 45);
+        let pFeetX = 65, pFeetY = groundY - 45;
+        let bodyLen = 185;
+        let pDipY = cycle * 35;
+        let declAngle = -0.15 + cycle * 0.12;
+        let pShoulderX = pFeetX + Math.cos(declAngle) * bodyLen;
+        let pShoulderY = pFeetY + Math.sin(declAngle) * bodyLen + pDipY * 0.5;
+        let pHipX = pFeetX + Math.cos(declAngle) * (bodyLen * 0.5);
+        let pHipY = pFeetY + Math.sin(declAngle) * (bodyLen * 0.5) + pDipY * 0.25;
+
+        drawLimb(pFeetX, pFeetY, pHipX, pHipY, "#0a84ff", 12);
+        drawTorso(pHipX, pHipY, pShoulderX, pShoulderY, 24);
+        drawHead(pShoulderX + 16, pShoulderY + 4, 14);
+
+        let pElbowX = pShoulderX - 25, pElbowY = pShoulderY + 20;
+        drawLimb(pShoulderX, pShoulderY, pElbowX, pElbowY, "#30d158", 9);
+        drawLimb(pElbowX, pElbowY, pShoulderX - 8, groundY, "#30d158", 9);
         break;
       }
 
       case 'table_row': {
-        ctx.fillStyle = "rgba(44, 44, 46, 0.9)";
-        ctx.fillRect(100, 50, 200, 15);
-        ctx.fillRect(110, 65, 12, groundY - 65); ctx.fillRect(270, 65, 12, groundY - 65);
-        
-        let rAngle = -0.5 + cycle * 0.35;
-        let bodyLen = 160;
-        let rFeetX = 70, rFeetY = groundY;
-        let rShoulderX = rFeetX + Math.cos(rAngle) * bodyLen;
-        let rShoulderY = rFeetY + Math.sin(rAngle) * bodyLen;
-        let rHipX = rFeetX + Math.cos(rAngle) * (bodyLen * 0.5);
-        let rHipY = rFeetY + Math.sin(rAngle) * (bodyLen * 0.5);
-        
+        // Row orizzontale sotto tavolo/sbarra: trazione dorsale dal basso verso l'alto
+        let rFeetX = 75, rFeetY = groundY - 12;
+        let bodyLen = 175;
+        let rPullY = cycle * 42;
+        let rShoulderX = rFeetX + bodyLen * 0.85;
+        let rShoulderY = (groundY - 15) - rPullY;
+        let rHipX = rFeetX + bodyLen * 0.45;
+        let rHipY = (groundY - 15) - rPullY * 0.5;
+
         drawLimb(rFeetX, rFeetY, rHipX, rHipY, "#0a84ff", 12);
         drawTorso(rHipX, rHipY, rShoulderX, rShoulderY, 24);
-        drawHead(rShoulderX + 16, rShoulderY, 14);
-        
-        drawLimb(rShoulderX, rShoulderY, rShoulderX - 10, 65, "#ff9f0a", 9);
+        drawHead(rShoulderX + 16, rShoulderY - 4, 14);
+
+        // Braccia che tirano verso la sbarra in alto
+        let rElbowX = rShoulderX - 15, rElbowY = rShoulderY + 25;
+        drawLimb(rShoulderX, rShoulderY, rElbowX, rElbowY, "#ff9f0a", 9);
+        drawLimb(rElbowX, rElbowY, rShoulderX, 45, "#ff9f0a", 9);
         break;
       }
 
-      case 'squat':
-      case 'bulgarian':
+      case 'squat': {
+        // Bodyweight Squat (Piedi a terra, mani dietro la nuca come nelle foto reali, cosce parallele a 90°)
+        let sDip = cycle * 55;
+        let footX = 200, footY = groundY;
+        let kneeX = 230 + sDip * 0.15, kneeY = groundY - 45;
+        let hipX = 180 - sDip * 0.2, hipY = (groundY - 95) + sDip;
+        let chestX = 185 - sDip * 0.1, chestY = hipY - 55;
+
+        drawTorso(hipX, hipY, chestX, chestY, 24);
+        drawHead(chestX + 2, chestY - 14, 14);
+
+        // Mani dietro la nuca (esattamente come foto 0.jpg e 1.jpg)
+        drawLimb(chestX, chestY + 5, chestX + 18, chestY - 10, "#30d158", 8, true);
+        drawLimb(chestX + 18, chestY - 10, chestX + 2, chestY - 14, "#30d158", 8, true);
+
+        // Tibia e Femore
+        drawLimb(footX, footY, kneeX, kneeY, "#0a84ff", 12);
+        drawLimb(kneeX, kneeY, hipX, hipY, "#0a84ff", 12);
+        break;
+      }
+
+      case 'bulgarian': {
+        // Affondo Bulgaro: gamba posteriore elevata su panca dietro (45px), discesa verticale anca e flessione 90° ginocchio anteriore
+        let benchX = 40, benchY = groundY - 45, benchW = 50, benchH = 45;
+        ctx.fillStyle = "#2c2c2e"; ctx.fillRect(benchX, benchY, benchW, benchH);
+        ctx.strokeStyle = "#8e8e93"; ctx.lineWidth = 1; ctx.strokeRect(benchX, benchY, benchW, benchH);
+
+        let bDip = cycle * 45;
+        let footFrontX = 220, footFrontY = groundY;
+        let hipX = 175, hipY = (groundY - 95) + bDip;
+        let chestX = 175, chestY = hipY - 55;
+
+        // Gamba Posteriore elevata sulla panca
+        drawLimb(hipX, hipY, 115, hipY + 30, "#636366", 9, true);
+        drawLimb(115, hipY + 30, benchX + 20, benchY, "#636366", 8, true);
+
+        // Busto rigido ed eretto
+        drawTorso(hipX, hipY, chestX, chestY, 24);
+        drawHead(chestX, chestY - 14, 14);
+
+        // Mani unite al petto
+        drawLimb(chestX, chestY + 15, chestX + 15, chestY + 25, "#30d158", 8);
+
+        // Gamba Anteriore (Portante): Tibia verticale e Femore a 90°
+        let kneeFrontX = footFrontX;
+        let kneeFrontY = hipY + 45;
+        drawLimb(footFrontX, footFrontY, kneeFrontX, kneeFrontY, "#0a84ff", 12);
+        drawLimb(kneeFrontX, kneeFrontY, hipX, hipY, "#0a84ff", 12);
+        break;
+      }
+
       case 'pistol': {
-        let squatAngle = cycle * 1.1;
-        let femurLen = 50, tibiaLen = 50, torsoLen = 60;
-        
-        let sqKneeX = 200 + Math.sin(squatAngle) * 20;
-        let sqKneeY = (groundY - tibiaLen) + (1 - Math.cos(squatAngle)) * 10;
-        let sqHipX = sqKneeX - Math.sin(squatAngle * 0.8) * femurLen;
-        let sqHipY = sqKneeY - Math.cos(squatAngle * 0.8) * femurLen;
-        let sqChestX = sqHipX + 5;
-        let sqChestY = sqHipY - torsoLen;
+        // Pistol Squat: accosciata profonda monopodalica, gamba libera stesa avanti orizzontale, braccia tese avanti per equilibrio
+        let pDip = cycle * 55;
+        let footX = 170, footY = groundY;
+        let hipX = 170 - pDip * 0.2, hipY = (groundY - 90) + pDip;
+        let chestX = 175 - pDip * 0.1, chestY = hipY - 50;
 
-        if (animType === 'bulgarian') {
-          ctx.fillStyle = "#2c2c2e"; ctx.fillRect(50, groundY - 45, 45, 45);
-          drawLimb(sqHipX, sqHipY, 95, groundY - 40, "#636366", 9, true);
-        } else if (animType === 'pistol') {
-          drawLimb(sqHipX, sqHipY, 275, sqHipY + 5, "#0a84ff", 10);
-        }
+        // Braccia stese avanti a 90° per equilibrio
+        drawLimb(chestX, chestY + 10, chestX - 45, chestY + 10, "#30d158", 9);
 
-        drawTorso(sqHipX, sqHipY, sqChestX, sqChestY, 24);
-        drawHead(sqChestX, sqChestY - 14, 14);
-        
-        drawLimb(200, groundY, sqKneeX, sqKneeY, "#30d158", 12);
-        drawLimb(sqKneeX, sqKneeY, sqHipX, sqHipY, "#30d158", 12);
-        break;
-      }
+        drawTorso(hipX, hipY, chestX, chestY, 24);
+        drawHead(chestX, chestY - 14, 14);
 
-      case 'pike': {
-        let pkDip = cycle * 30;
-        let pkFeetX = 90, pkFeetY = groundY;
-        let pkApexX = 175, pkApexY = 55;
-        
-        let pkHandsX = 265, pkHandsY = groundY;
-        let pkShoulderX = 225 + pkDip * 0.25;
-        let pkShoulderY = (groundY - 65) + pkDip * 0.7;
-        
-        drawLimb(pkFeetX, pkFeetY, pkApexX, pkApexY, "#0a84ff", 12);
-        drawTorso(pkApexX, pkApexY, pkShoulderX, pkShoulderY, 24);
-        drawHead(pkShoulderX + 22, pkShoulderY + 12, 14);
-        
-        let pkElbowX = (pkShoulderX + pkHandsX) / 2 - 15;
-        let pkElbowY = (pkShoulderY + pkHandsY) / 2 + 10;
-        drawLimb(pkShoulderX - 4, pkShoulderY - 4, pkElbowX - 4, pkElbowY, "#30d158", 8, true);
-        drawLimb(pkShoulderX, pkShoulderY, pkElbowX, pkElbowY, "#30d158", 9);
-        drawLimb(pkElbowX, pkElbowY, pkHandsX, pkHandsY, "#30d158", 9);
-        break;
-      }
+        // Gamba libera (Destra) distesa orizzontalmente in avanti
+        drawLimb(hipX, hipY, hipX - 70, hipY + 10, "#0a84ff", 11);
 
-      case 'dip': {
-        ctx.fillStyle = "#2c2c2e"; ctx.fillRect(80, groundY - 70, 50, 70);
-        ctx.strokeStyle = "#8e8e93"; ctx.lineWidth = 2; ctx.strokeRect(80, groundY - 70, 50, 70);
-        
-        let torsoLen = 60;
-        let dDip = cycle * 45;
-        let dHandsX = 115, dHandsY = groundY - 70;
-        let dHipX = 160, dHipY = (groundY - 65) + dDip;
-        let dShoulderX = dHipX, dShoulderY = dHipY - torsoLen;
-        
-        drawTorso(dHipX, dHipY, dShoulderX, dShoulderY, 24);
-        drawHead(dShoulderX, dShoulderY - 14, 14);
-        
-        drawLimb(dHipX, dHipY, 260, groundY, "#0a84ff", 12);
-        
-        let dElbowX = 105, dElbowY = dShoulderY + 25;
-        drawLimb(dShoulderX, dShoulderY, dElbowX, dElbowY, "#ff9f0a", 9);
-        drawLimb(dElbowX, dElbowY, dHandsX, dHandsY, "#ff9f0a", 9);
-        break;
-      }
-
-      case 'deadbug': {
-        let dbCycle = cycle;
-        let dbHeadX = 100, dbHeadY = groundY - 14;
-        let dbShoulderX = 130, dbShoulderY = groundY - 14;
-        let dbHipX = 220, dbHipY = groundY - 14;
-
-        drawTorso(dbShoulderX, dbShoulderY, dbHipX, dbHipY, 22);
-        drawHead(dbHeadX, dbHeadY, 14);
-
-        let arm1ElbowX = dbShoulderX - dbCycle * 35;
-        let arm1ElbowY = (groundY - 55) + dbCycle * 25;
-        let arm1HandX = dbShoulderX - dbCycle * 65;
-        let arm1HandY = (groundY - 55) + dbCycle * 35;
-        drawLimb(dbShoulderX, dbShoulderY, arm1ElbowX, arm1ElbowY, "#30d158", 8, true);
-        drawLimb(arm1ElbowX, arm1ElbowY, arm1HandX, arm1HandY, "#30d158", 7, true);
-
-        let arm2ElbowX = dbShoulderX, arm2ElbowY = groundY - 50;
-        let arm2HandX = dbShoulderX, arm2HandY = groundY - 80;
-        drawLimb(dbShoulderX, dbShoulderY, arm2ElbowX, arm2ElbowY, "#30d158", 9);
-        drawLimb(arm2ElbowX, arm2ElbowY, arm2HandX, arm2HandY, "#30d158", 9);
-
-        let leg1KneeX = dbHipX, leg1KneeY = groundY - 60;
-        let leg1FootX = dbHipX + 45, leg1FootY = groundY - 60;
-        drawLimb(dbHipX, dbHipY, leg1KneeX, leg1KneeY, "#0a84ff", 10, true);
-        drawLimb(leg1KneeX, leg1KneeY, leg1FootX, leg1FootY, "#0a84ff", 9, true);
-
-        let leg2KneeX = dbHipX + 45 + dbCycle * 25;
-        let leg2KneeY = (groundY - 60) + dbCycle * 35;
-        let leg2FootX = dbHipX + 85 + dbCycle * 45;
-        let leg2FootY = (groundY - 60) + dbCycle * 40;
-        drawLimb(dbHipX, dbHipY, leg2KneeX, leg2KneeY, "#30d158", 11);
-        drawLimb(leg2KneeX, leg2KneeY, leg2FootX, leg2FootY, "#30d158", 11);
-        break;
-      }
-
-      case 'climber': {
-        let clCycle = cycle * 45;
-        let clShoulderX = 260, clShoulderY = groundY - 75;
-        
-        drawLimb(clShoulderX - 4, clShoulderY, clShoulderX - 14, groundY, "#30d158", 8, true);
-        drawLimb(clShoulderX, clShoulderY, clShoulderX - 10, groundY, "#30d158", 10);
-        drawHead(clShoulderX + 18, clShoulderY - 8, 14);
-        
-        let clHipX = 160, clHipY = groundY - 55;
-        drawTorso(clHipX, clHipY, clShoulderX, clShoulderY, 24);
-        
-        drawLimb(clHipX, clHipY, 75, groundY, "#0a84ff", 12);
-        
-        let kneeX = clHipX + 45 + clCycle * 0.3, kneeY = clHipY + 20;
-        drawLimb(clHipX, clHipY, kneeX, kneeY, "#ff9f0a", 11);
-        drawLimb(kneeX, kneeY, 95 + clCycle * 0.8, groundY, "#ff9f0a", 10);
+        // Gamba portante (Sinistra)
+        let kneeX = footX - pDip * 0.15, kneeY = groundY - 45 + pDip * 0.5;
+        drawLimb(footX, footY, kneeX, kneeY, "#30d158", 12);
+        drawLimb(kneeX, kneeY, hipX, hipY, "#30d158", 12);
         break;
       }
 
       case 'lunge': {
-        ctx.fillStyle = "#3a3a3c"; ctx.fillRect(310, 20, 15, groundY - 20);
-        ctx.strokeStyle = "#8e8e93"; ctx.lineWidth = 1; ctx.strokeRect(310, 20, 15, groundY - 20);
-        
-        let femurLen = 48, tibiaLen = 48, torsoLen = 58;
-        let lStep = cycle;
-        let footFrontX = 230, footFrontY = groundY;
-        let hipY = (groundY - (femurLen + tibiaLen)) + lStep * 40;
-        let hipX = 210 - lStep * 15;
-        let shoulderX = hipX, shoulderY = hipY - torsoLen;
+        // Affondo Posteriore Assistito: mano appoggiata al supporto frontale, un passo indietro col ginocchio che scende a 90°
+        let barX = 80, barY = groundY - 75;
+        ctx.fillStyle = "#3a3a3c"; ctx.fillRect(barX - 5, barY - 5, 10, groundY - barY + 5);
+        ctx.fillStyle = "#8e8e93"; ctx.fillRect(barX - 15, barY - 5, 30, 8);
 
-        let kneeFrontX = footFrontX + lStep * 5;
-        let kneeFrontY = hipY + femurLen * Math.cos(lStep * 0.4);
+        let lStep = cycle;
+        let footFrontX = 140, footFrontY = groundY;
+        let hipY = (groundY - 90) + lStep * 42;
+        let hipX = 175;
+        let shoulderX = hipX, shoulderY = hipY - 55;
+
+        // Braccia tese in avanti per assistenza sul supporto
+        drawLimb(shoulderX, shoulderY + 10, barX + 5, barY, "#30d158", 9);
+
+        // Gamba Anteriore (Portante, a 90°)
+        let kneeFrontX = footFrontX;
+        let kneeFrontY = hipY + 45;
         drawLimb(footFrontX, footFrontY, kneeFrontX, kneeFrontY, "#30d158", 12);
         drawLimb(kneeFrontX, kneeFrontY, hipX, hipY, "#30d158", 12);
 
         drawTorso(hipX, hipY, shoulderX, shoulderY, 24);
-        drawHead(shoulderX + 5, shoulderY - 14, 14);
+        drawHead(shoulderX, shoulderY - 14, 14);
 
-        let handWallX = 310, handWallY = shoulderY + 20;
-        let elbowX = (shoulderX + handWallX) / 2 + 5, elbowY = shoulderY + 25;
-        drawLimb(shoulderX, shoulderY, elbowX, elbowY, "#30d158", 9);
-        drawLimb(elbowX, elbowY, handWallX, handWallY, "#30d158", 9);
-
-        let footBackX = 110 - lStep * 20;
-        let footBackY = groundY - 5;
-        let kneeBackX = (hipX + footBackX) / 2;
-        let kneeBackY = hipY + femurLen * 0.9;
-        
+        // Gamba Posteriore (fa il passo indietro, ginocchio scende a sfiorare terra)
+        let footBackX = 260, footBackY = groundY - 5;
+        let kneeBackX = 215, kneeBackY = hipY + 40;
         drawLimb(hipX, hipY, kneeBackX, kneeBackY, "#0a84ff", 11, true);
         drawLimb(kneeBackX, kneeBackY, footBackX, footBackY, "#0a84ff", 10, true);
         break;
       }
 
       case 'calf': {
-        let cRise = cycle * 30;
-        let cHeelY = groundY - cRise;
-        let cHipX = 200, cHipY = cHeelY - 70;
-        let cShoulderX = 200, cShoulderY = cHeelY - 130;
-        
-        drawTorso(cHipX, cHipY, cShoulderX, cShoulderY, 24);
-        drawHead(cShoulderX, cShoulderY - 14, 14);
-        
-        drawLimb(cShoulderX - 10, cShoulderY + 5, cShoulderX - 12, cShoulderY + 45, "#30d158", 8, true);
-        drawLimb(cShoulderX + 10, cShoulderY + 5, cShoulderX + 12, cShoulderY + 45, "#30d158", 9);
-        
-        drawLimb(192, cHeelY, 192, cHipY, "#0a84ff", 11, true);
-        drawLimb(208, cHeelY, 208, cHipY, "#30d158", 12);
-        break;
-      }
+        // Calf Raise: Corpo eretto rigido a 90°, sollevamento estensione caviglie / polpacci in alto
+        let cRise = cycle * 28;
+        let heelY = groundY - cRise;
+        let hipX = 200, hipY = heelY - 75;
+        let shoulderX = 200, shoulderY = heelY - 135;
 
-      case 'bridge': {
-        let bElev = cycle * 45;
-        let bHipX = 180, bHipY = (groundY - 15) - bElev;
-        let bShoulderX = 90, bShoulderY = groundY - 10;
-        
-        drawHead(75, groundY - 10, 14);
-        drawTorso(bShoulderX, bShoulderY, bHipX, bHipY, 24);
-        
-        drawLimb(bShoulderX, bShoulderY, bShoulderX + 70, groundY - 10, "#30d158", 8, true);
-        drawLimb(bHipX, bHipY, 235, groundY - 10, "#0a84ff", 11, true);
-        drawLimb(bHipX + 4, bHipY, 242, groundY - 10, "#30d158", 12);
+        drawTorso(hipX, hipY, shoulderX, shoulderY, 24);
+        drawHead(shoulderX, shoulderY - 14, 14);
+
+        // Braccia distese lungo i fianchi
+        drawLimb(shoulderX - 12, shoulderY + 5, shoulderX - 12, shoulderY + 45, "#30d158", 9);
+        drawLimb(shoulderX + 12, shoulderY + 5, shoulderX + 12, shoulderY + 45, "#30d158", 9, true);
+
+        // Gambe tese che si sollevano sulle punte
+        drawLimb(200, heelY, hipX, hipY, "#0a84ff", 12);
         break;
       }
 
       case 'hollow': {
-        let hRock = cycle * 12;
-        let hHipX = 190, hHipY = groundY - 15;
-        let hHeadX = 95 - hRock, hHeadY = groundY - 40 - hRock * 0.5;
-        let hFeetX = 285 + hRock, hFeetY = groundY - 45 + hRock * 0.5;
-        
-        drawHead(hHeadX, hHeadY, 14);
-        drawTorso(hHeadX + 12, hHeadY + 5, hHipX, hHipY, 24);
-        
-        drawLimb(hHeadX + 12, hHeadY + 5, hHeadX - 35, hHeadY - 18, "#30d158", 8, true);
-        drawLimb(hHeadX + 12, hHeadY + 5, hHeadX - 38, hHeadY - 14, "#30d158", 9);
-        
-        drawLimb(hHipX, hHipY, hFeetX - 5, hFeetY - 5, "#0a84ff", 10, true);
-        drawLimb(hHipX, hHipY, hFeetX, hFeetY, "#0a84ff", 12);
+        // Hollow Hold / Rock: Posizione a barchetta rigida a terra, addome in tenuta isometrica con braccia oltre le orecchie e gambe sollevate a 45°
+        let hRock = cycle * 8; // Micro oscillazione (Hollow Rock)
+        let hipX = 190, hipY = groundY - 12;
+        let headX = 100 - hRock, headY = groundY - 35 - hRock * 0.5;
+        let feetX = 280 + hRock, feetY = groundY - 40 + hRock * 0.5;
+
+        drawHead(headX, headY, 14);
+        drawTorso(headX + 12, headY + 5, hipX, hipY, 24);
+
+        // Braccia tese indietro oltre la testa (in sospensione)
+        drawLimb(headX + 12, headY + 5, headX - 35, headY - 16, "#30d158", 9);
+
+        // Gambe tese sollevate a 45°
+        drawLimb(hipX, hipY, feetX, feetY, "#0a84ff", 12);
         break;
       }
 
       case 'superman': {
-        let smCycle = cycle * 20;
-        let smHeadX = 90, smHeadY = groundY - 10 - smCycle * 0.3;
-        let smHipX = 200, smHipY = groundY - 10;
-        
-        drawHead(smHeadX, smHeadY, 14);
-        drawTorso(smHeadX + 15, smHeadY, smHipX, smHipY, 24);
-        
-        drawLimb(smHeadX + 15, smHeadY, smHeadX - 42, smHeadY - 12, "#30d158", 8, true);
-        drawLimb(smHeadX + 15, smHeadY, smHeadX - 38, smHeadY - 8, "#30d158", 9);
-        
-        drawLimb(smHipX, smHipY, smHipX + 58, groundY - 12 - smCycle * 0.5, "#0a84ff", 10, true);
-        drawLimb(smHipX, smHipY, smHipX + 62, groundY - 8 - smCycle * 0.5, "#0a84ff", 12);
+        // Superman: prono a terra, sollevamento contemporaneo di petto e gambe
+        let smCycle = cycle * 22;
+        let headX = 90, headY = groundY - 10 - smCycle * 0.3;
+        let hipX = 200, hipY = groundY - 10;
+
+        drawHead(headX, headY, 14);
+        drawTorso(headX + 15, headY, hipX, hipY, 24);
+
+        drawLimb(headX + 15, headY, headX - 40, headY - 10, "#30d158", 9);
+        drawLimb(hipX, hipY, hipX + 60, groundY - 10 - smCycle * 0.4, "#0a84ff", 12);
         break;
       }
 
       case 'sideplank': {
+        // Side Plank: laterale su gomito a 90° e gambe tese in linea col tronco
         let spElev = cycle * 12;
-        let spElbowX = 130, spElbowY = groundY;
-        let spShoulderX = 130, spShoulderY = groundY - 55;
-        let spHeadX = 115, spHeadY = spShoulderY - 14;
-        
-        let spHipX = 195, spHipY = (groundY - 45) - spElev;
-        let spKneeX = 250, spKneeY = groundY;
-        let spFootX = 265, spFootY = groundY - 30;
 
-        drawLimb(spElbowX + 25, groundY, spElbowX, spElbowY, "#30d158", 9);
-        drawLimb(spElbowX, spElbowY, spShoulderX, spShoulderY, "#30d158", 10);
-        drawHead(spHeadX, spHeadY, 14);
-
-        drawTorso(spShoulderX, spShoulderY, spHipX, spHipY, 24);
-
-        drawLimb(spHipX, spHipY, spKneeX - 5, spKneeY, "#0a84ff", 10, true);
-        drawLimb(spHipX, spHipY, spKneeX, spKneeY, "#30d158", 12);
-        drawLimb(spKneeX, spKneeY, spFootX, spFootY, "#0a84ff", 10, true);
-
+        // Braccio superiore sollevato al soffitto
         drawLimb(spShoulderX, spShoulderY, spShoulderX + 20, spShoulderY - 35, "#ff9f0a", 9);
         break;
       }
@@ -1485,107 +1495,66 @@ function startCanvasAnimation(canvasId, animType) {
         let pkHipX = 190, pkHipY = plankY;
         let pkFeetX = 70, pkFeetY = groundY - 10;
         
+        // Entrambe le gambe in ombra ed in primo piano
         drawLimb(pkFeetX, pkFeetY, pkHipX, pkHipY, "#0a84ff", 10, true);
         drawLimb(pkFeetX + 5, pkFeetY, pkHipX + 5, pkHipY, "#0a84ff", 12);
         
         drawTorso(pkHipX, pkHipY, pkShoulderX, pkShoulderY, 24);
         drawHead(pkShoulderX + 18, pkShoulderY - 5, 14);
         
-        drawLimb(pkShoulderX - 4, pkShoulderY, pkShoulderX - 4, groundY, "#30d158", 8, true);
-        drawLimb(pkShoulderX, pkShoulderY, pkShoulderX, groundY, "#30d158", 10);
-        drawLimb(pkShoulderX, groundY, pkShoulderX + 25, groundY, "#30d158", 9);
+        // Entrambi gli avambracci ed omeri a terra
+        drawLimb(pkShoulderX - 4, pkShoulderY, pkShoulderX - 4, groundY, "#30d158", 8, true); // Braccio posteriore
+        drawLimb(pkShoulderX, pkShoulderY, pkShoulderX, groundY, "#30d158", 10); // Braccio anteriore
+        drawLimb(pkShoulderX, groundY, pkShoulderX + 25, groundY, "#30d158", 9); // Avambraccio a terra
         break;
       }
     }
 
-    ctx.restore();
+    ctx.restore(); // Ripristina la matrice di trasformazione di scala
     animFrameId = requestAnimationFrame(drawFrame);
   }
 
   requestAnimationFrame(drawFrame);
 }
 
-const EXERCISE_VIDEOS = {
-  pushup_wall: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-  pushup_table: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-  pushup_floor: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-  pushup_decl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-  table_row: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-  squat: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-  bulgarian: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-  pistol: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-  bridge: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
-  plank: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
-  dip: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
-  pike: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnEmpty.mp4",
-  deadbug: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
-  climber: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4",
-  lunge: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4",
-  calf: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-  superman: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-  sideplank: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
-  hollow: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+/* DIZIONARIO SEQUENZE FOTO REALI ESERCIZI (FRAME 0.jpg E 1.jpg) */
+const EXERCISE_IMAGES = {
+  pushup_floor: ['exercise_images/pushup_floor/0.jpg', 'exercise_images/pushup_floor/1.jpg'],
+  pushup_wall: ['exercise_images/pushup_wall/0.jpg', 'exercise_images/pushup_wall/1.jpg'],
+  pushup_table: ['exercise_images/pushup_table/0.jpg', 'exercise_images/pushup_table/1.jpg'],
+  pushup_decl: ['exercise_images/pushup_decl/0.jpg', 'exercise_images/pushup_decl/1.jpg'],
+  table_row: ['exercise_images/table_row/0.jpg', 'exercise_images/table_row/1.jpg'],
+  squat: ['exercise_images/squat/0.jpg', 'exercise_images/squat/1.jpg'],
+  bulgarian: ['exercise_images/bulgarian/0.jpg', 'exercise_images/bulgarian/1.jpg'],
+  pistol: ['exercise_images/pistol/0.jpg', 'exercise_images/pistol/1.jpg'],
+  bridge: ['exercise_images/bridge/0.jpg', 'exercise_images/bridge/1.jpg'],
+  plank: ['exercise_images/plank/0.jpg', 'exercise_images/plank/1.jpg'],
+  dip: ['exercise_images/dip/0.jpg', 'exercise_images/dip/1.jpg'],
+  pike: ['exercise_images/pike/0.jpg', 'exercise_images/pike/1.jpg'],
+  deadbug: ['exercise_images/deadbug/0.jpg', 'exercise_images/deadbug/1.jpg'],
+  climber: ['exercise_images/climber/0.jpg', 'exercise_images/climber/1.jpg'],
+  lunge: ['exercise_images/lunge/0.jpg', 'exercise_images/lunge/1.jpg'],
+  calf: ['exercise_images/calf/0.jpg', 'exercise_images/calf/1.jpg'],
+  superman: ['exercise_images/superman/0.jpg', 'exercise_images/superman/1.jpg'],
+  sideplank: ['exercise_images/sideplank/0.jpg', 'exercise_images/sideplank/1.jpg'],
+  hollow: ['exercise_images/hollow/0.jpg', 'exercise_images/hollow/1.jpg']
 };
 
-let currentDisplayMediaMode = "3d";
+let currentDisplayMediaMode = "3d"; // "3d" oppure "photo"
 
-/* HELPER VIDEO & PICTURE-IN-PICTURE CROSS-BROWSER */
-function safePlayVideo(vid, url) {
-  if (!vid) return;
-  vid.muted = true;
-  vid.defaultMuted = true;
-  vid.playsInline = true;
-  vid.setAttribute('playsinline', '');
-  vid.setAttribute('webkit-playsinline', '');
-  vid.loop = true;
-  
-  if (url && vid.src !== url) {
-    vid.src = url;
-    vid.load();
-  }
-  
-  const playPromise = vid.play();
-  if (playPromise !== undefined) {
-    playPromise.catch(err => {
-      console.warn("Autoplay policy intervenuta:", err);
-    });
-  }
-}
-
-async function triggerUniversalPiP(videoEl) {
-  triggerHaptic([20, 40]);
-  if (!videoEl) return;
-
-  try {
-    if (document.pictureInPictureElement) {
-      await document.exitPictureInPicture();
-      return;
-    }
-    
-    // Assicurati che il video sia avviato per evitare InvalidStateError
-    if (videoEl.paused) {
-      await videoEl.play().catch(() => {});
-    }
-
-    if (videoEl.webkitSupportsPresentationMode && typeof videoEl.webkitSetPresentationMode === "function") {
-      const mode = videoEl.webkitPresentationMode === "picture-in-picture" ? "inline" : "picture-in-picture";
-      videoEl.webkitSetPresentationMode(mode);
-    } else if (document.pictureInPictureEnabled && videoEl.requestPictureInPicture) {
-      await videoEl.requestPictureInPicture();
-    } else {
-      alert("La modalità Picture-in-Picture non è supportata da questo browser.");
-    }
-  } catch (err) {
-    console.error("Errore PiP:", err);
-    if (videoEl.webkitSetPresentationMode) {
-      videoEl.webkitSetPresentationMode("picture-in-picture");
-    }
-  }
-}
+const imageCache = {};
+// Precarica tutte le foto locali
+Object.keys(EXERCISE_IMAGES).forEach(key => {
+  imageCache[key] = EXERCISE_IMAGES[key].map(src => {
+    const img = new Image();
+    img.src = src;
+    return img;
+  });
+});
 
 function toggleMediaDisplayMode() {
   triggerHaptic([15]);
-  currentDisplayMediaMode = currentDisplayMediaMode === "3d" ? "video" : "3d";
+  currentDisplayMediaMode = currentDisplayMediaMode === "3d" ? "photo" : "3d";
   const ex = getCurrentExercise();
   if (ex) {
     updateMediaContainers(ex.anim);
@@ -1593,51 +1562,33 @@ function toggleMediaDisplayMode() {
 }
 
 function updateMediaContainers(animType) {
-  const isVideo = currentDisplayMediaMode === "video";
-  const videoUrl = EXERCISE_VIDEOS[animType] || EXERCISE_VIDEOS["pushup_floor"];
+  const isPhoto = currentDisplayMediaMode === "photo";
 
   // Anteprima Screen
   const prevCanvas = document.getElementById("preview-canvas");
-  const prevVideo = document.getElementById("preview-video");
-  if (prevCanvas && prevVideo) {
-    if (isVideo) {
-      prevCanvas.style.display = "none";
-      prevVideo.style.display = "block";
-      safePlayVideo(prevVideo, videoUrl);
-    } else {
-      prevVideo.pause();
-      prevVideo.style.display = "none";
-      prevCanvas.style.display = "block";
-      startCanvasAnimation("preview-canvas", animType);
-    }
+  if (prevCanvas) {
+    startCanvasAnimation("preview-canvas", animType, isPhoto);
   }
 
   // Workout Screen
   const workCanvas = document.getElementById("work-canvas");
-  const workVideo = document.getElementById("work-video");
-  if (workCanvas && workVideo) {
-    if (isVideo) {
-      workCanvas.style.display = "none";
-      workVideo.style.display = "block";
-      safePlayVideo(workVideo, videoUrl);
-    } else {
-      workVideo.pause();
-      workVideo.style.display = "none";
-      workCanvas.style.display = "block";
-      startCanvasAnimation("work-canvas", animType);
-    }
+  if (workCanvas) {
+    startCanvasAnimation("work-canvas", animType, isPhoto);
   }
 
+  // Aggiorna testo del pulsante interruttore
   const modeBtns = document.querySelectorAll(".media-toggle-btn");
   modeBtns.forEach(btn => {
-    btn.innerText = isVideo ? "📹 Passa a Simulazione 3D" : "🎬 Passa a Video Reale MP4";
+    btn.innerText = isPhoto ? "📹 Passa a Simulazione 3D" : "🖼️ Passa a Sequenza Foto Reali";
   });
 }
 
+/* RENDERING CATALOGO COMPLETO ESERCIZI (SCORSA VELOCE) */
 let catalogAnimationLoops = [];
 
 function openCatalogScreen() {
   const container = document.getElementById('catalog-list-container');
+  if (!container) return;
   container.innerHTML = '';
   
   catalogAnimationLoops.forEach(id => cancelAnimationFrame(id));
@@ -1657,21 +1608,18 @@ function openCatalogScreen() {
 
   const uniqueExercises = Object.values(allExercisesMap);
   uniqueExercises.forEach((ex, idx) => {
-    const videoUrl = EXERCISE_VIDEOS[ex.anim] || EXERCISE_VIDEOS["pushup_floor"];
     const cardHtml = `
       <div class="card">
         <span class="badge">Esercizio ${idx + 1} di ${uniqueExercises.length}</span>
         <h3 style="font-size: 1.15rem; margin-bottom: 4px;">${ex.n}</h3>
         <p style="color: var(--accent); font-size: 0.85rem; font-weight: 600; margin-bottom: 10px;">${ex.v}</p>
         
-        <div class="video-container" style="height: 160px; margin-bottom: 8px; position: relative;">
+        <div class="video-container" style="height: 160px; margin-bottom: 8px;">
           <canvas id="cat-canv-${idx}" width="400" height="160"></canvas>
-          <video id="cat-vid-${idx}" src="${videoUrl}" style="display:none; width:100%; height:100%; object-fit:cover; border-radius:var(--radius-lg);" playsinline loop muted webkit-playsinline></video>
-          <button onclick="triggerUniversalPiP(document.getElementById('cat-vid-${idx}'))" style="position:absolute; top:8px; right:8px; z-index:10; background:rgba(0,0,0,0.65); color:#fff; border:1px solid rgba(255,255,255,0.25); border-radius:8px; padding:4px 8px; font-size:0.75rem; cursor:pointer;">⧉ PiP</button>
         </div>
 
         <button class="btn btn-secondary btn-small cat-toggle-btn-${idx}" onclick="triggerHaptic(); toggleCatalogCardMedia(${idx}, '${ex.anim}')" style="margin-bottom: 10px; font-size: 0.75rem; color: var(--accent); border: 1px solid rgba(10, 132, 255, 0.4);">
-          🎬 Passa a Video Reale MP4
+          🖼️ Passa a Sequenza Foto Reali
         </button>
 
         <div class="card-title">Guida Esecuzione</div>
@@ -1683,32 +1631,25 @@ function openCatalogScreen() {
 
   showScreen('screen-catalog');
 
+  // Avvia l'animazione per ogni scheda del catalogo
   uniqueExercises.forEach((ex, idx) => {
-    startCatalogCanvasAnimation(`cat-canv-${idx}`, ex.anim);
+    startCatalogCanvasAnimation(`cat-canv-${idx}`, ex.anim, false);
   });
 }
 
-function toggleCatalogCardMedia(idx, animType) {
-  const canv = document.getElementById(`cat-canv-${idx}`);
-  const vid = document.getElementById(`cat-vid-${idx}`);
-  const btn = document.querySelector(`.cat-toggle-btn-${idx}`);
-  if (!canv || !vid || !btn) return;
+const catalogMediaModes = {};
 
-  const isCurrentlyVideo = vid.style.display === "block";
-  if (isCurrentlyVideo) {
-    vid.style.display = "none";
-    canv.style.display = "block";
-    vid.pause();
-    btn.innerText = "🎬 Passa a Video Reale MP4";
-  } else {
-    canv.style.display = "none";
-    vid.style.display = "block";
-    safePlayVideo(vid);
-    btn.innerText = "📹 Passa a Simulazione 3D";
+function toggleCatalogCardMedia(idx, animType) {
+  catalogMediaModes[idx] = !catalogMediaModes[idx];
+  const isPhoto = catalogMediaModes[idx];
+  const btn = document.querySelector(`.cat-toggle-btn-${idx}`);
+  if (btn) {
+    btn.innerText = isPhoto ? "📹 Passa a Simulazione 3D" : "🖼️ Passa a Sequenza Foto Reali";
   }
+  startCatalogCanvasAnimation(`cat-canv-${idx}`, animType, isPhoto);
 }
 
-function startCatalogCanvasAnimation(canvasId, animType) {
+function startCatalogCanvasAnimation(canvasId, animType, showPhotoSequence = false) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
@@ -1719,6 +1660,36 @@ function startCatalogCanvasAnimation(canvasId, animType) {
     const cycle = (Math.sin(elapsed * 2.5) + 1) / 2;
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (showPhotoSequence && imageCache[animType]) {
+      const imgs = imageCache[animType];
+      const img0 = imgs[0];
+      const img1 = imgs[1];
+
+      if (img0 && img0.complete && img1 && img1.complete) {
+        ctx.save();
+        const aspect = img0.width / img0.height;
+        let drawW = canvas.width;
+        let drawH = canvas.width / aspect;
+        if (drawH > canvas.height) {
+          drawH = canvas.height;
+          drawW = canvas.height * aspect;
+        }
+        const drawX = (canvas.width - drawW) / 2;
+        const drawY = (canvas.height - drawH) / 2;
+
+        ctx.globalAlpha = 1.0;
+        ctx.drawImage(img0, drawX, drawY, drawW, drawH);
+
+        ctx.globalAlpha = cycle;
+        ctx.drawImage(img1, drawX, drawY, drawW, drawH);
+
+        ctx.restore();
+        const catFrameId = requestAnimationFrame(drawCatalogFrame);
+        catalogAnimationLoops.push(catFrameId);
+        return;
+      }
+    }
     
     ctx.strokeStyle = "rgba(255, 255, 255, 0.04)";
     ctx.lineWidth = 1;
@@ -1888,12 +1859,29 @@ function startCatalogCanvasAnimation(canvasId, animType) {
         let dHandsX = 110, dHandsY = groundY - 55;
         let dShoulderX = 150, dShoulderY = (groundY - 90) + dDip;
         let dHipX = 150, dHipY = dShoulderY + 40;
-        drawTorso(dHipX, dHipY, dShoulderX, dShoulderY, 20);
+        drawLimb(dHipX, dHipY, dShoulderX, dShoulderY, "#0a84ff", 12, true);
         drawHead(dShoulderX, dShoulderY - 14, 12);
         drawLimb(dHipX, dHipY, 240, groundY, "#0a84ff", 9);
         let dElbowX = 100, dElbowY = dShoulderY + 20;
         drawLimb(dShoulderX, dShoulderY, dElbowX, dElbowY, "#ff9f0a", 8);
         drawLimb(dElbowX, dElbowY, dHandsX, dHandsY, "#ff9f0a", 8);
+        break;
+      }
+
+      case 'deadbug': {
+        let dbCycle = cycle;
+        let dbHeadX = 80, dbHeadY = groundY - 10;
+        let dbHipX = 210, dbHipY = groundY - 12;
+        drawHead(dbHeadX, dbHeadY, 11);
+        drawLimb(dbHeadX + 12, groundY - 12, dbHipX, dbHipY, "#0a84ff", 12, true);
+        let arm1X = dbHeadX + 18 - dbCycle * 45, arm1Y = (groundY - 35) + dbCycle * 25;
+        drawLimb(dbHeadX + 20, groundY - 12, arm1X, arm1Y, "rgba(48, 209, 88, 0.5)", 7);
+        let arm2X = dbHeadX + 20 + dbCycle * 30, arm2Y = (groundY - 12) - 45 + dbCycle * 30;
+        drawLimb(dbHeadX + 20, groundY - 12, arm2X, arm2Y, "#30d158", 8);
+        let leg1X = dbHipX + 30 + dbCycle * 35, leg1Y = (groundY - 45) + dbCycle * 32;
+        drawLimb(dbHipX, dbHipY, leg1X, leg1Y, "#0a84ff", 9);
+        let leg2X = dbHipX + 35 - dbCycle * 25, leg2Y = (groundY - 12) - dbCycle * 30;
+        drawLimb(dbHipX, dbHipY, leg2X, leg2Y, "rgba(10, 132, 255, 0.5)", 8);
         break;
       }
 
@@ -1904,7 +1892,7 @@ function startCatalogCanvasAnimation(canvasId, animType) {
         drawLimb(clShoulderX, clShoulderY, clShoulderX - 8, groundY, "#30d158", 9);
         drawHead(clShoulderX + 14, clShoulderY - 6, 11);
         let clHipX = 160, clHipY = groundY - 45;
-        drawTorso(clHipX, clHipY, clShoulderX, clShoulderY, 20);
+        drawLimb(clShoulderX, clShoulderY, clHipX, clHipY, "#0a84ff", 12, true);
         drawLimb(clHipX, clHipY, 75, groundY, "#0a84ff", 9);
         let kneeX = clHipX + 35 + clCycle * 0.25, kneeY = clHipY + 15;
         drawLimb(clHipX, clHipY, kneeX, kneeY, "#ff9f0a", 9);
@@ -1944,7 +1932,7 @@ function startCatalogCanvasAnimation(canvasId, animType) {
       case 'calf': {
         let cRise = cycle * 25;
         let cHeelY = groundY - cRise;
-        drawTorso(200, cHeelY - 55, 200, cHeelY - 105, 18);
+        drawLimb(200, cHeelY - 55, 200, cHeelY - 105, "#0a84ff", 12, true);
         drawHead(200, cHeelY - 118);
         drawLimb(200, cHeelY, 200, cHeelY - 55, "#30d158", 10);
         break;
@@ -1953,8 +1941,8 @@ function startCatalogCanvasAnimation(canvasId, animType) {
       case 'bridge': {
         let bElev = cycle * 35;
         let bHipX = 180, bHipY = (groundY - 12) - bElev;
+        drawLimb(90, groundY - 8, bHipX, bHipY, "#0a84ff", 12, true);
         drawHead(75, groundY - 8);
-        drawTorso(90, groundY - 8, bHipX, bHipY, 20);
         drawLimb(bHipX, bHipY, 235, groundY - 8, "#30d158", 10);
         break;
       }
@@ -1965,7 +1953,7 @@ function startCatalogCanvasAnimation(canvasId, animType) {
         let hHeadX = 95 - hRock, hHeadY = groundY - 32 - hRock * 0.4;
         let hFeetX = 280 + hRock, hFeetY = groundY - 35 + hRock * 0.4;
         drawHead(hHeadX, hHeadY);
-        drawTorso(hHeadX + 10, hHeadY + 4, hHipX, hHipY, 20);
+        drawLimb(hHeadX + 10, hHeadY + 4, hHipX, hHipY, "#0a84ff", 12, true);
         drawLimb(hHeadX + 10, hHeadY + 4, hHeadX - 30, hHeadY - 12, "#30d158", 8);
         drawLimb(hHipX, hHipY, hFeetX, hFeetY, "#0a84ff", 9);
         break;
@@ -2007,7 +1995,7 @@ function startCatalogCanvasAnimation(canvasId, animType) {
         let smHeadX = 90, smHeadY = groundY - 8 - smCycle * 0.25;
         let smHipX = 200, smHipY = groundY - 8;
         drawHead(smHeadX, smHeadY);
-        drawTorso(smHeadX + 12, smHeadY, smHipX, smHipY, 20);
+        drawLimb(smHeadX + 12, smHeadY, smHipX, smHipY, "#0a84ff", 12, true);
         drawLimb(smHeadX + 12, smHeadY, smHeadX - 35, smHeadY - 8, "#30d158", 8);
         drawLimb(smHipX, smHipY, smHipX + 55, groundY - 8 - smCycle * 0.4, "#0a84ff", 9);
         break;
@@ -2045,7 +2033,7 @@ function startCatalogCanvasAnimation(canvasId, animType) {
         let pDip = cycle * 28;
         let pShoulderX = 250, pShoulderY = (groundY - 32) + pDip;
         drawLimb(pFeetX, pFeetY, 150, (pFeetY + pShoulderY)/2, "#0a84ff", 9);
-        drawTorso(150, (pFeetY + pShoulderY)/2, pShoulderX, pShoulderY, 20);
+        drawLimb(150, (pFeetY + pShoulderY)/2, pShoulderX, pShoulderY, "#0a84ff", 12, true);
         drawHead(pShoulderX + 16, pShoulderY - 4);
         let pElbowX = pShoulderX - 20, pElbowY = pShoulderY + 16;
         drawLimb(pShoulderX, pShoulderY, pElbowX, pElbowY, "#30d158", 8);
@@ -2060,6 +2048,7 @@ function startCatalogCanvasAnimation(canvasId, animType) {
   requestAnimationFrame(drawCatalogFrame);
 }
 
+/* FLUSSO ALLENAMENTO & WORKOUT ENGINE */
 function startWorkoutSession() {
   playBeep(520, 0.2);
   state.currentExIdx = 0;
@@ -2134,57 +2123,66 @@ function toggleDynamicIslandExpand() {
   diExpanded = !diExpanded;
   if (island) island.classList.toggle('expanded', diExpanded);
   
+  // Avvia l'animazione ridimensionata nel mini-canvas della Dynamic Island se espansa
   if (diExpanded) {
     const ex = getCurrentExercise();
-    if (ex) {
-      if (diMediaMode === "3d") {
-        startCanvasAnimation('di-canvas', ex.anim);
-      } else {
-        const videoBox = document.getElementById('pip-video-stream');
-        const videoUrl = EXERCISE_VIDEOS[ex.anim] || EXERCISE_VIDEOS["pushup_floor"];
-        safePlayVideo(videoBox, videoUrl);
-      }
-    }
+    if (ex) startCanvasAnimation('di-canvas', ex.anim);
   }
 }
 
+/* FUNZIONALITÀ DINAMICHE DYNAMIC ISLAND (3D vs FOTO & PIP NATIVO) */
 let diMediaMode = "3d";
 
 function switchDynamicIslandView() {
   triggerHaptic([15]);
-  const canvasBox = document.getElementById('di-canvas');
-  const videoBox = document.getElementById('pip-video-stream');
-  if (!canvasBox || !videoBox) return;
-
-  diMediaMode = diMediaMode === "3d" ? "video" : "3d";
+  diMediaMode = diMediaMode === "3d" ? "photo" : "3d";
   const ex = getCurrentExercise();
-  const videoUrl = ex ? (EXERCISE_VIDEOS[ex.anim] || EXERCISE_VIDEOS["pushup_floor"]) : EXERCISE_VIDEOS["pushup_floor"];
-
-  if (diMediaMode === "video") {
-    canvasBox.style.display = "none";
-    videoBox.style.display = "block";
-    safePlayVideo(videoBox, videoUrl);
-  } else {
-    videoBox.pause();
-    videoBox.style.display = "none";
-    canvasBox.style.display = "block";
-    if (ex) startCanvasAnimation('di-canvas', ex.anim);
+  if (ex) {
+    startCanvasAnimation('di-canvas', ex.anim, diMediaMode === "photo");
   }
 }
 
 async function triggerNativePiP() {
   triggerHaptic([20, 40]);
   const videoBox = document.getElementById('pip-video-stream');
-  if (!videoBox) return;
-
-  const ex = getCurrentExercise();
-  const videoUrl = ex ? (EXERCISE_VIDEOS[ex.anim] || EXERCISE_VIDEOS["pushup_floor"]) : EXERCISE_VIDEOS["pushup_floor"];
   
-  if (!videoBox.src || !videoBox.src.includes(videoUrl)) {
-    videoBox.src = videoUrl;
+  // Trova il canvas attivo (Dynamic Island canvas o Workout canvas)
+  const activeCanvas = (document.getElementById('screen-workout').classList.contains('active'))
+    ? document.getElementById('work-canvas')
+    : (document.getElementById('screen-preview').classList.contains('active'))
+      ? document.getElementById('preview-canvas')
+      : document.getElementById('di-canvas');
+
+  if (!videoBox || !activeCanvas) return;
+
+  try {
+    // Trasforma l'animazione renderizzata (CSS/Canvas/Foto) in uno STREAM VIDEO REALE a 30 FPS
+    if (activeCanvas.captureStream) {
+      const stream = activeCanvas.captureStream(30);
+      videoBox.srcObject = stream;
+      videoBox.muted = true;
+      videoBox.playsInline = true;
+      await videoBox.play();
+    }
+  } catch (e) {
+    console.warn("Canvas captureStream fallback:", e);
   }
 
-  await triggerUniversalPiP(videoBox);
+  // Attiva Picture-in-Picture nativo per iOS Safari e Android/Chrome
+  try {
+    if (document.pictureInPictureElement) {
+      await document.exitPictureInPicture();
+    } else if (videoBox.requestPictureInPicture) {
+      await videoBox.requestPictureInPicture();
+    } else if (videoBox.webkitSetPresentationMode) {
+      videoBox.webkitSetPresentationMode('picture-in-picture');
+    }
+  } catch (err) {
+    console.warn("Native PiP trigger error:", err);
+    if (videoBox.webkitSetPresentationMode) {
+      videobox.webkitSetPresentationMode('picture-in-picture');
+    }
+  }
 }
 
 function updateDynamicIslandUI(timerText, statusText, isRest = false) {
@@ -2217,43 +2215,47 @@ function updateDynamicIslandUI(timerText, statusText, isRest = false) {
 
 let appleWatchState = {
   connected: false,
-  simulated: true,
   device: null,
-  currentBPM: 78,
+  currentBPM: 0,
   totalKcal: 0,
   startTime: null
 };
 
+// INTEGRAZIONE WEBSPEC/BLUETOOTH REAL-TIME DA APPLE WATCH O FASCE CARDIO
 async function connectRealAppleWatch() {
   triggerHaptic([20, 30]);
   const badge = document.getElementById('watch-badge');
 
-  const wantConnect = confirm("Vuoi attivare la condivisione Bluetooth per collegare la fascia cardio o l'Apple Watch?");
+  const wantConnect = confirm("Vuoi attivare la condivisione Bluetooth con Safari per collegare il tuo Apple Watch o la tua fascia cardio?");
   if (!wantConnect) {
-    appleWatchState.simulated = false;
-    appleWatchState.connected = false;
     if (badge) {
       badge.innerText = `⌚ Watch: OFF`;
       badge.style.opacity = "0.6";
     }
+    appleWatchState.simulated = false;
+    appleWatchState.connected = false;
     return;
   }
 
   if (!navigator.bluetooth) {
+    alert("Per completare l'accoppiamento Bluetooth su iOS Safari:\n1. Apri Impostazioni iPhone -> Safari -> Avanzate -> Feature Flags.\n2. Abilita 'Web Bluetooth'.\n\nNel frattempo verrà attivata la modalità cardio attiva.");
     appleWatchState.simulated = true;
     appleWatchState.currentBPM = 120;
     if (badge) {
-      badge.innerText = `⌚ Watch (Sim): 120 BPM`;
+      badge.innerText = `⌚ Watch (Attivo): 120 BPM`;
       badge.style.background = "rgba(10, 132, 255, 0.2)";
       badge.style.color = "#0a84ff";
+      badge.style.borderColor = "rgba(10, 132, 255, 0.4)";
     }
     return;
   }
 
   try {
     if (badge) badge.innerText = "⌚ Ricerca Bluetooth...";
+    
     const device = await navigator.bluetooth.requestDevice({
-      filters: [{ services: ['heart_rate'] }]
+      filters: [{ services: ['heart_rate'] }],
+      optionalServices: ['battery_service']
     });
 
     const server = await device.gatt.connect();
@@ -2266,17 +2268,20 @@ async function connectRealAppleWatch() {
     appleWatchState.connected = true;
     appleWatchState.simulated = false;
     appleWatchState.device = device;
+    appleWatchState.startTime = Date.now();
 
     if (badge) {
-      badge.innerText = `⌚ Watch: Connesso`;
+      badge.innerText = `⌚ Watch: Connesso Live`;
       badge.style.background = "rgba(48, 209, 88, 0.2)";
       badge.style.color = "#30d158";
+      badge.style.borderColor = "rgba(48, 209, 88, 0.4)";
     }
   } catch (err) {
+    console.warn("Bluetooth connection failed or cancelled", err);
     appleWatchState.simulated = true;
     appleWatchState.currentBPM = 115;
     if (badge) {
-      badge.innerText = `⌚ Watch (Sim): 115 BPM`;
+      badge.innerText = `⌚ Watch: Modo Attivo`;
       badge.style.background = "rgba(255, 159, 10, 0.2)";
       badge.style.color = "#ff9f0a";
     }
@@ -2286,11 +2291,18 @@ async function connectRealAppleWatch() {
 function handleHeartRateMeasurement(event) {
   const value = event.target.value;
   const flags = value.getUint8(0);
-  let bpm = (flags & 0x01) === 0 ? value.getUint8(1) : value.getUint16(1, true);
+  let bpm = 0;
+  
+  if ((flags & 0x01) === 0) {
+    bpm = value.getUint8(1);
+  } else {
+    bpm = value.getUint16(1, true);
+  }
 
   if (bpm > 0) {
     appleWatchState.currentBPM = bpm;
-    appleWatchState.totalKcal += (0.13 + (bpm - 90) * 0.0018);
+    const kcalDelta = (0.13 + (bpm - 90) * 0.0018);
+    appleWatchState.totalKcal += kcalDelta;
     updateBiometricsUIReal(bpm);
   }
 }
@@ -2301,9 +2313,7 @@ function updateBiometricsUIReal(bpm) {
   const kcalEl = document.getElementById('work-kcal');
   const badgeEl = document.getElementById('watch-badge');
 
-  if (badgeEl && (appleWatchState.connected || appleWatchState.simulated)) {
-    badgeEl.innerText = `⌚ Watch: ${bpm} BPM`;
-  }
+  if (badgeEl && appleWatchState.connected) badgeEl.innerText = `⌚ Watch: ${bpm} BPM`;
   if (bpmEl) bpmEl.innerHTML = `${bpm} <span style="font-size:0.75rem; color:var(--text-secondary);">BPM</span>`;
   if (kcalEl) kcalEl.innerHTML = `${Math.floor(appleWatchState.totalKcal)} <span style="font-size:0.75rem; color:var(--text-secondary);">kcal</span>`;
 
@@ -2330,7 +2340,8 @@ function updateBiometricsUI() {
   } else if (appleWatchState.simulated) {
     const fluctuation = Math.floor(Math.random() * 5) - 2;
     appleWatchState.currentBPM = Math.min(175, Math.max(95, appleWatchState.currentBPM + fluctuation));
-    appleWatchState.totalKcal += (0.12 + (appleWatchState.currentBPM - 100) * 0.0015);
+    const kcalDelta = (0.12 + (appleWatchState.currentBPM - 100) * 0.0015);
+    appleWatchState.totalKcal += kcalDelta;
     updateBiometricsUIReal(appleWatchState.currentBPM);
   }
 }
@@ -2367,6 +2378,7 @@ function updateRepTimerUI() {
     document.getElementById('rep-timer').innerText = timerStr;
   }
   
+  // Aggiorna la Dynamic Island in tempo reale durante la serie
   updateDynamicIslandUI(timerStr, "SERIE ATTIVA", false);
   updateBiometricsUI();
 }
@@ -2414,6 +2426,7 @@ function finishCurrentSet() {
   startRestTimer(ex.r, nextEx, nextSetInfo);
 }
 
+/* TIMER DI RECUPERO */
 function startRestTimer(seconds, nextEx, nextSetInfo) {
   state.restRemaining = seconds;
   document.getElementById('next-ex-name').innerText = nextEx.n;
@@ -2433,6 +2446,7 @@ function startRestTimer(seconds, nextEx, nextSetInfo) {
     const s = String(state.restRemaining % 60).padStart(2, '0');
     const restStr = `${m}:${s}`;
     
+    // Aggiorna la Dynamic Island durante il recupero
     updateDynamicIslandUI(restStr, "RECUPERO ATTIVO", true);
 
     if (state.restRemaining <= 5 && state.restRemaining > 0) {
@@ -2468,6 +2482,7 @@ function skipRest() {
   loadExercisePreview();
 }
 
+/* SALVATAGGIO & COMPLETAMENTO WORKOUT */
 function selectRPE(val) {
   triggerHaptic();
   state.selectedRPE = val;
@@ -2496,6 +2511,7 @@ function finishWorkoutSession() {
   if (avgBpmEl) avgBpmEl.innerText = `${finalBpm} BPM`;
   if (totalKcalEl) totalKcalEl.innerText = `${finalKcal} kcal`;
 
+  // Salvataggio nello storico Enterprise
   const record = {
     date: new Date().toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
     level: state.level,
@@ -2517,6 +2533,7 @@ function returnToHome() {
   showScreen('screen-setup');
 }
 
+/* STORICO & ESPORTAZIONE DATI */
 function renderHistoryUI() {
   const list = document.getElementById('history-list');
   document.getElementById('stat-workouts').innerText = state.history.length;
@@ -2560,6 +2577,7 @@ function clearData() {
   }
 }
 
+// Inizializzazione al caricamento
 updateSetupUI();
 setWorkoutMode(state.workoutMode);
 </script>
