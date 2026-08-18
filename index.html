@@ -2577,6 +2577,54 @@ function clearData() {
   }
 }
 
+function triggerNativePiP() {
+  triggerHaptic([30, 20]);
+  const activeCanvas = document.getElementById('work-canvas') || document.getElementById('preview-canvas') || document.getElementById('di-canvas');
+  if (!activeCanvas) {
+    alert("Nessuna animazione attiva per il Picture-in-Picture.");
+    return;
+  }
+
+  let videoStream = document.getElementById('pip-video-stream');
+  if (!videoStream) {
+    videoStream = document.createElement('video');
+    videoStream.id = 'pip-video-stream';
+    videoStream.style.display = 'none';
+    videoStream.muted = true;
+    videoStream.playsInline = true;
+    videoStream.autoplay = true;
+    document.body.appendChild(videoStream);
+  }
+
+  try {
+    if (activeCanvas.captureStream) {
+      const stream = activeCanvas.captureStream(30);
+      videoStream.srcObject = stream;
+    } else if (activeCanvas.mozCaptureStream) {
+      const stream = activeCanvas.mozCaptureStream(30);
+      videoStream.srcObject = stream;
+    }
+    
+    videoStream.play().then(() => {
+      if (document.pictureInPictureElement) {
+        document.exitPictureInPicture().catch(e => console.log(e));
+      } else if (videoStream.requestPictureInPicture) {
+        videoStream.requestPictureInPicture().catch(err => {
+          alert("Per attivare il Picture-in-Picture su iOS Safari, apri il sito da Safari e attiva 'Picture in Picture automatico' nelle impostazioni di iOS oppure tocca il pulsante quando il video è avviato.");
+        });
+      } else if (videoStream.webkitSetPresentationMode) {
+        videoStream.webkitSetPresentationMode('picture-in-picture');
+      } else {
+        alert("Il tuo browser non supporta l'API Picture-in-Picture.");
+      }
+    }).catch(err => {
+      console.log("Errore riproduzione stream video PiP:", err);
+    });
+  } catch (e) {
+    console.error("Errore captureStream PiP:", e);
+  }
+}
+
 // Inizializzazione al caricamento
 updateSetupUI();
 setWorkoutMode(state.workoutMode);
